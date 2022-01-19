@@ -1,0 +1,2 @@
+# aim
+My graduation project
