@@ -47,6 +47,7 @@ from torch import nn, optim
 
 from Examples.torch.utils.image_net_data_loader import ImageNetDataLoader
 from Examples.torch.utils.image_net_evaluator import ImageNetEvaluator
+import Examples.common.image_net_config as conf
 
 logger = logging.getLogger('Trainer')
 
@@ -58,7 +59,7 @@ class ImageNetTrainer:
 
     # pylint: disable=too-many-arguments
     def __init__(self, images_dir: str, image_size: int, batch_size: int = 128,
-                 num_workers: int = 32, num_train_samples_per_class: int = None):
+                 num_workers: int = 32, num_train_samples_per_class: int = conf.dataset["num_train_samples_per_class"]  ):
         """
         :param images_dir: The path to the data directory
         :param image_size: The length of the image
@@ -66,7 +67,6 @@ class ImageNetTrainer:
         :param num_workers: Indiicates to the data loader how many sub-processes to use for data loading.
         :param num_train_samples_per_class: Number of samples to use per class.
         """
-
         self._train_loader = ImageNetDataLoader(images_dir=images_dir, image_size=image_size, batch_size=batch_size,
                                                 is_training=True, num_workers=num_workers,
                                                 num_samples_per_class=num_train_samples_per_class).data_loader

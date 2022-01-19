@@ -162,7 +162,7 @@ def aimet_spatial_svd(model: torch.nn.Module,
     results = ModelCompressor.compress_model(model=model,
                                              eval_callback=evaluator,
                                              eval_iterations=10,
-                                             input_shape=(1, 3, 224, 224),
+                                             input_shape=(1, 3, 32, 32),
                                              compress_scheme=scheme,
                                              cost_metric=metric,
                                              parameters=params)
@@ -204,6 +204,7 @@ def spatial_svd_example(config: argparse.Namespace):
     model.eval()
     # Calculates floating point accuracy
     accuracy = data_pipeline.evaluate(model, use_cuda=config.use_cuda)
+
     logger.info("Original Model top-1 accuracy = %.2f", accuracy)
 
     # Compress the model using AIMET Weight SVD

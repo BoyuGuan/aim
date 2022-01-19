@@ -109,6 +109,8 @@ class ImageFolder(Dataset):
     """
     Dataset class inspired by torchvision.datasets.folder.DatasetFolder for images organized as
         individual files grouped by category.
+    !imageFolder 类从 torch.utils.data 继承而来，将按类存放的文件夹转化为数据集
+    
     """
 
     def __init__(self, root: str, transform=None, target_transform=None,
@@ -146,6 +148,7 @@ class ImageFolder(Dataset):
     def _find_classes(directory: str):
         classes = [d for d in os.listdir(directory) if
                    os.path.isdir(os.path.join(directory, d))]
+        # 是文件夹就算入类里
         classes.sort()
         class_to_idx = {classes[i]: i for i in range(len(classes))}
         return classes, class_to_idx
@@ -209,8 +212,6 @@ class ImageNetDataLoader:
         self._data_loader = torch_data.DataLoader(
             data_set, batch_size=batch_size, shuffle = is_training,
             num_workers=num_workers, pin_memory=True)
-        a = iter(self._data_loader)
-        print(a)
 
     @property
     def data_loader(self) -> torch_data.DataLoader:

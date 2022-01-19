@@ -39,6 +39,7 @@
 """
 Creates Evaluator for Image-Net dataset
 """
+from http.client import ImproperConnectionState
 import logging
 
 import progressbar
@@ -47,6 +48,7 @@ from torch import nn
 
 from Examples.common.utils import accuracy
 from Examples.torch.utils.image_net_data_loader import ImageNetDataLoader
+import Examples.common.image_net_config as conf
 
 logger = logging.getLogger('Eval')
 
@@ -57,13 +59,13 @@ class ImageNetEvaluator:
     """
 
     def __init__(self, images_dir: str, image_size: int, batch_size: int = 128,
-                 num_workers: int = 32, num_val_samples_per_class: int = 202):
+                 num_workers: int = 32, num_val_samples_per_class: int = conf.dataset["num_train_val_per_class"] ):
         """
         :param images_dir: The path to the data directory
         :param image_size: The length of the image
         :param batch_size: The batch size to use for training and validation
         :param num_workers: Indiicates to the data loader how many sub-processes to use for data loading.
-        :param num_train_samples_per_class: Number of samples to use per class.
+        :param num_val_samples_per_class: Number of samples to use per class.
         """
         self._val_data_loader = ImageNetDataLoader(images_dir,
                                                    image_size=image_size,
