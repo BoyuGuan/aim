@@ -263,6 +263,8 @@ def spatial_svd_example(config: argparse.Namespace):
 
 
 if __name__ == '__main__':
+
+    os.system('pause')
     default_logdir = os.path.join("benchmark_output", "spatial_svd_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
 
     parser = argparse.ArgumentParser(
