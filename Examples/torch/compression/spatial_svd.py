@@ -96,6 +96,22 @@ class ImageNetDataPipeline:
         """
         self._config = _config
 
+    def train(self, model:torch.nn.Module ) :
+        """
+        train model from begin
+
+        Args:
+            model (torch.nn.Module): model to train.
+            iterations (int, optional): epoches to train.  Defaults to 15.
+            use_cuda (bool, optional):  use cuda or not. Defaults to False.
+        """
+        trainer = ImageNetTrainer(self._config.dataset_dir, image_size=image_net_config.dataset['image_size'],
+                            batch_size=image_net_config.train['batch_size'],
+                            num_workers=image_net_config.train['num_workers'])
+        trainer.train(model, max_epochs = 20, learning_rate=self._config.learning_rate,
+                learning_rate_schedule=self._config.learning_rate_schedule, use_cuda=self._config.use_cuda)
+
+
     def evaluate(self, model: torch.nn.Module, iterations: int = None, use_cuda: bool = False) -> float:
         """
         Evaluate the specified model using the specified number of samples from the validation set.
@@ -113,6 +129,7 @@ class ImageNetDataPipeline:
                                       batch_size=image_net_config.evaluation['batch_size'],
                                       num_workers=image_net_config.evaluation['num_workers'])
         return evaluator.evaluate(model, iterations, use_cuda)
+    
 
     def finetune(self, model: torch.nn.Module):
         """
@@ -169,6 +186,7 @@ def aimet_spatial_svd(model: torch.nn.Module,
     return results
 
 
+
 def spatial_svd_example(config: argparse.Namespace):
     """
     1. Instantiate Data Pipeline for evaluation and training
@@ -198,7 +216,16 @@ def spatial_svd_example(config: argparse.Namespace):
     # Instantiate Data Pipeline for evaluation and training
     data_pipeline = ImageNetDataPipeline(config)
     # Loads the pretrained resnet18 model
-    model = models.resnet18(pretrained=True)
+    
+    #调用模型 
+    model = models.resnet18()
+    #提取fc层中固定的参数 
+    fc_features = model.fc.in_features 
+    #修改类别为10 
+    model.fc = torch.nn.Linear(fc_features, 10)
+
+    data_pipeline.train(model)
+
     if config.use_cuda:
         model.to(torch.device('cuda'))
     model.eval()

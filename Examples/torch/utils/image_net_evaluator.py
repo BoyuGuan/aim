@@ -59,7 +59,7 @@ class ImageNetEvaluator:
     """
 
     def __init__(self, images_dir: str, image_size: int, batch_size: int = 128,
-                 num_workers: int = 32, num_val_samples_per_class: int = conf.dataset["num_train_val_per_class"] ):
+                 num_workers: int = 32, num_val_samples_per_class: int = conf.dataset["num_val_samples_per_class"] ):
         """
         :param images_dir: The path to the data directory
         :param image_size: The length of the image

@@ -36,7 +36,7 @@
 # =============================================================================
 
 """
-Creates data-loader for Image-Net dataset
+Creates data-loader for dataset
 """
 import logging
 import os
@@ -95,6 +95,7 @@ def add_images_for_class(class_path: str, extensions: tuple, num_samples_per_cla
     count = 0
     for file_name in os.listdir(class_path):
         if num_samples_per_class and count >= num_samples_per_class:
+            #!如果给定了每个类的额度的话，到数会直接break，而不给定数，采用默认值的None的话则无影响
             break
         if has_file_allowed_extension(file_name, extensions):
             image_path = os.path.join(class_path, file_name)
@@ -115,13 +116,20 @@ class ImageFolder(Dataset):
 
     def __init__(self, root: str, transform=None, target_transform=None,
                  num_samples_per_class: int = None):
-
         """
+        !pytorch官方doc对父类torch.utils.data.Dataset描述如下
+        !All datasets that represent a map from keys to data samples should subclass it. 
+        !All subclasses should overwrite __getitem__(), supporting fetching a data sample for a given key. 
+        !Subclasses could also optionally overwrite __len__(), 
+        !which is expected to return the size of the dataset by many Sampler implementations and the default options of DataLoader.
+        
         :param root: The path to the data directory.
         :param transform: The required processing to be applied on the sample.
         :param target_transform:  The required processing to be applied on the target.
         :param num_samples_per_class: Number of samples to use per class.
-
+        
+        首先获得imgs，其为list型的二元tuple，tuple的第一个元素存储图片地址，tuple第二个元素存储该图片类别的idx
+        Dataset 是
         """
         Dataset.__init__(self)
         classes, class_to_idx = self._find_classes(root)
@@ -189,7 +197,7 @@ class ImageNetDataLoader:
 
         self.train_transforms = transforms.Compose([
             # transforms.RandomResizedCrop(image_size),
-            # transforms.RandomHorizontalFlip(),
+            transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             normalize])
 
@@ -208,7 +216,6 @@ class ImageNetDataLoader:
                 root=os.path.join(images_dir, 'val'), transform=self.val_transforms,
                 num_samples_per_class=num_samples_per_class)
             
-        print(batch_size)
         self._data_loader = torch_data.DataLoader(
             data_set, batch_size=batch_size, shuffle = is_training,
             num_workers=num_workers, pin_memory=True)

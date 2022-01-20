@@ -45,13 +45,13 @@ dataset = {
     "image_height"      :       32,
     "image_channels"    :       3,
     "image_size"        :       32,
-    "images_mean"       :       [0.485, 0.456, 0.406],
-    "images_std"        :       [0.229, 0.224, 0.225],
+    "images_mean"       :       [0.4914, 0.4822, 0.4465],
+    "images_std"        :       [0.2023, 0.1994, 0.2010],
     "images_classes"    :       10,
     "val_images_len"    :       10000, # len of val
     "test_images_len"   :       40000,  # len of train
-    "num_train_samples_per_class" : 1000,
-    "num_val_samples_per_class": 1000
+    "num_train_samples_per_class" : None,
+    "num_val_samples_per_class": None
 }
 
 evaluation = {

@@ -20,10 +20,8 @@ def handleCifar(dataSetDir):
     num2label = unpickle(os.path.join(dataSetDir,'batches.meta'))[b'label_names']
     for batches in os.listdir(dataSetDir):
         subSet = None
-        if '4' in batches :
+        if 'test' in batches :
             subSet = 'val'
-        elif 'test' in batches :
-            subSet = 'test'
         elif 'data' in batches: 
             subSet = 'train'
         else :
