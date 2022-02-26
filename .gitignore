@@ -118,10 +118,13 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
-# mkdocs documentation
+
+
+
+11# mkdocs documentation
 /site
-/dataset
-# /data
+/dataset/
+/data/
 /benchmark_output
 # mypy
 .mypy_cache/
@@ -130,5 +133,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-/temp/
+temp*
 /cifar
