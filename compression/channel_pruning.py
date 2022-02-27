@@ -42,6 +42,7 @@ technique followed by fine tuning.
 """
 
 import argparse
+from distutils.command.config import config
 import logging
 import os
 from datetime import datetime
@@ -135,7 +136,7 @@ class ImageNetDataPipeline:
         trainer.train(model, max_epochs=self._config.epochs, learning_rate=self._config.learning_rate,
                       learning_rate_schedule=self._config.learning_rate_schedule, use_cuda=self._config.use_cuda)
 
-        torch.save(model, os.path.join(self._config.logdir, 'finetuned_model.pth'))
+        torch.save(model, os.path.join(self._config.logdir, 'compressed_model_finetuned.pth'))
 
 
 def aimet_channel_pruning(model: torch.nn.Module, evaluator: aimet_common.defs.EvalFunction,
@@ -171,7 +172,7 @@ def aimet_channel_pruning(model: torch.nn.Module, evaluator: aimet_common.defs.E
     results = ModelCompressor.compress_model(model=model,
                                              eval_callback=evaluator,
                                              eval_iterations=10,
-                                             input_shape=(1, 3, 224, 224),
+                                             input_shape=(1, 3, 32, 32),
                                              compress_scheme=scheme,
                                              cost_metric=metric,
                                              parameters=params)
@@ -208,8 +209,10 @@ def channel_pruning_example(config: argparse.Namespace):
     # Instantiate Data Pipeline for evaluation and training
     data_pipeline = ImageNetDataPipeline(config)
 
-    # Load the pretrained resnet18 model
-    model = models.resnet18()
+    # Load the pretrained model
+    modelNames = ['resNet18', 'resNet50', 'mobileNet_v2']
+    model = torch.load('./preTrainedModel/pre_trained_' + modelNames[_config.model] + '.pth')
+
     if config.use_cuda:
         model.to(torch.device('cuda'))
     model.eval()
@@ -246,15 +249,15 @@ def channel_pruning_example(config: argparse.Namespace):
     logger.info("Model Finetuning Complete")
 
     # Save the compressed model
-    torch.save(compressed_model, os.path.join(config.logdir, 'compressed_model.pth'))
+    torch.save(compressed_model, os.path.join(config.logdir, 'compressed_model_not_finted.pth'))
 
 
 if __name__ == '__main__':
-    default_logdir = os.path.join("benchmark_output",
-                                  "channel_prunning_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
 
     parser = argparse.ArgumentParser(
-        description='Apply Channel Pruning on pretrained ResNet18 model and finetune it for ImageNet dataset')
+        description='Apply Channel Pruning on pretrained ResNet18 model and finetune it for cifar dataset')
+
+    parser.print_help()
 
     parser.add_argument('--dataset_dir', type=str,
                         required=True,
@@ -265,15 +268,10 @@ if __name__ == '__main__':
                         required=True,
                         help='Add this flag to run the test on GPU.')
 
-    parser.add_argument('--logdir', type=str,
-                        default=default_logdir,
-                        help="Path to a directory for logging.\
-                              Default value is 'benchmark_output/weight_svd_<Y-m-d-H-M-S>'")
-
     parser.add_argument('--epochs', type=int,
-                        default=15,
+                        default=20,
                         help="Number of epochs for finetuning.\n\
-                              Default is 15")
+                              Default is 20")
     parser.add_argument('--learning_rate', type=float,
                         default=1e-2,
                         help="A float type learning rate for model finetuning.\n\
@@ -283,9 +281,20 @@ if __name__ == '__main__':
                         help="A list of epoch indices for learning rate schedule used in finetuning.\n\
                               Check https://pytorch.org/docs/stable/_modules/torch/optim/lr_scheduler.html#MultiStepLR for more details.\n\
                               Default is [5, 10]")
-
+    
+    parser.add_argument('--model', type=int, required=True,
+                    help="The model you want to compress, \n\
+                        0 means ResNet18, \n\
+                        1 means ResNet50, \n\
+                        2 means mobileNetV2")
+    
+    parser.add_argument('--logdir', type=str, default='./',
+                    help="Path to a directory for logging.\
+                        you don't need to give it a value, whatever you input, it will be 'benchmark_output/model_channel_pruning_<Y-m-d-H-M-S>'")
+    
     _config = parser.parse_args()
-
+    modelNames = ['resNet18', 'resNet50', 'mobileNet_v2']
+    _config.logdir = os.path.join("benchmark_output", modelNames[_config.model] +  "_channel_prunning_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
     os.makedirs(_config.logdir, exist_ok=True)
 
     fileHandler = logging.FileHandler(os.path.join(_config.logdir, "test.log"))

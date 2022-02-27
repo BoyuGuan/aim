@@ -29,7 +29,7 @@ def preTrain(_config: argparse.Namespace, model: torch.nn.Module):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='pre-train args')
+    parser = argparse.ArgumentParser(description='pre-train args, to pre-train the model')
     parser.add_argument('--dataset_dir', type=str, required=True, 
         help="Path to a directory containing ImageNet dataset.\n\
             This folder should conatin at least 2 subfolders:\n'train': for training dataset and 'val': for validation dataset")
@@ -48,11 +48,11 @@ if __name__ == '__main__':
     if _config.use_cuda and not torch.cuda.is_available():
         raise RuntimeError("Found no CUDA Device while use_cuda is selected")
 
-    resNet18 = models.resnet18()
-    resNet50 = models.resnet50()
-    mobileNetV2 = models.mobilenet_v2()
-    myModels = [resNet18, resNet50, mobileNetV2]
-    modelName  = ['resNet18', 'resNet50', 'mobileNetv2']
+    resNet18 = models.resNet18()
+    resNet50 = models.resNet50()
+    mobileNet_v2 = models.mobilenet_v2()
+    myModels = [resNet18, resNet50, mobileNet_v2]
+    modelName  = ['resNet18', 'resNet50', 'mobileNet_v2']
     for i, model in enumerate(myModels):
         model = preTrain(_config, model)
         torch.save(model, os.path.join(_config.model_dir, 'pre_trained_' + modelName[i] + '.pth'))
