@@ -96,22 +96,6 @@ class ImageNetDataPipeline:
         """
         self._config = _config
 
-    def train(self, model:torch.nn.Module ) :
-        """
-        train model from begin
-
-        Args:
-            model (torch.nn.Module): model to train.
-            iterations (int, optional): epoches to train.  Defaults to 15.
-            use_cuda (bool, optional):  use cuda or not. Defaults to False.
-        """
-        trainer = ImageNetTrainer(self._config.dataset_dir, image_size=image_net_config.dataset['image_size'],
-                            batch_size=image_net_config.train['batch_size'],
-                            num_workers=image_net_config.train['num_workers'])
-        trainer.train(model, max_epochs = 20, learning_rate=self._config.learning_rate,
-                learning_rate_schedule=self._config.learning_rate_schedule, use_cuda=self._config.use_cuda)
-
-
     def evaluate(self, model: torch.nn.Module, iterations: int = None, use_cuda: bool = False) -> float:
         """
         Evaluate the specified model using the specified number of samples from the validation set.
@@ -145,10 +129,9 @@ class ImageNetDataPipeline:
         trainer = ImageNetTrainer(self._config.dataset_dir, image_size=image_net_config.dataset['image_size'],
                                   batch_size=image_net_config.train['batch_size'],
                                   num_workers=image_net_config.train['num_workers'])
-
         trainer.train(model, max_epochs=self._config.epochs, learning_rate=self._config.learning_rate,
                       learning_rate_schedule=self._config.learning_rate_schedule, use_cuda=self._config.use_cuda)
-
+        torch.save(model, os.path.join(self._config.logdir, 'finetuned_model.pth'))
 
 def aimet_spatial_svd(model: torch.nn.Module,
                       evaluator: aimet_common.defs.EvalFunction):
