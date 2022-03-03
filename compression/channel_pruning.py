@@ -155,8 +155,7 @@ def aimet_channel_pruning(model: torch.nn.Module, evaluator: aimet_common.defs.E
                                                                num_comp_ratio_candidates=10)
 
     # Configure the auto mode compression. Ignore the first layer of the model (model.conv1).
-    auto_params = aimet_torch.defs.ChannelPruningParameters.AutoModeParams(greedy_params,
-                                                                           modules_to_ignore=[model.conv1])
+    auto_params = aimet_torch.defs.ChannelPruningParameters.AutoModeParams(greedy_params)
 
     # Configure the parameters for channel pruning compression
     # 50000 reconstruction samples will give better results and is recommended; however we use 5000 here as an example.
