@@ -49,17 +49,17 @@ dataset = {
     "images_std"        :       [0.2023, 0.1994, 0.2010],
     "images_classes"    :       10,
     "val_images_len"    :       10000, # len of val
-    "test_images_len"   :       40000,  # len of train
+    "test_images_len"   :       50000,  # len of train
     "num_train_samples_per_class" : None,
     "num_val_samples_per_class": None
 }
 
 evaluation = {
-    "batch_size"        :       64,
+    "batch_size"        :       1,
     "num_workers"       :       0
 }
 
 train = {
-    "batch_size"        :       64,
+    "batch_size"        :       1,
     "num_workers"       :       0
 }

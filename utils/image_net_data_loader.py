@@ -38,6 +38,7 @@
 """
 Creates data-loader for dataset
 """
+from distutils.command.config import config
 import logging
 import os
 
@@ -180,7 +181,7 @@ class ImageNetDataLoader:
     For loading Validation data from the ImageNet dataset.
     """
 
-    def __init__(self, images_dir: str, image_size: int, batch_size: int = 128,
+    def __init__(self, images_dir: str, image_size: int, batch_size: int = image_net_config.train["batch_size"],
                  is_training: bool = False, num_workers: int = 8, num_samples_per_class: int = None):
         """
         :param images_dir: The path to the data directory

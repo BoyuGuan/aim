@@ -6,7 +6,6 @@ from torchvision import models
 
 # imports for data pipelines
 from common import image_net_config
-from utils.image_net_evaluator import ImageNetEvaluator
 from utils.image_net_trainer import ImageNetTrainer
 
 def preTrain(_config: argparse.Namespace, model: torch.nn.Module):
@@ -48,10 +47,10 @@ if __name__ == '__main__':
     if _config.use_cuda and not torch.cuda.is_available():
         raise RuntimeError("Found no CUDA Device while use_cuda is selected")
 
-    resNet18 = models.resNet18()
-    resNet50 = models.resNet50()
-    mobileNet_v2 = models.mobilenet_v2()
-    myModels = [resNet18, resNet50, mobileNet_v2]
+    resnet18 = models.resnet18()
+    resnet50 = models.resnet50()
+    mobilenet_v2 = models.mobilenet_v2()
+    myModels = [resnet18, resnet50, mobilenet_v2]
     modelName  = ['resNet18', 'resNet50', 'mobileNet_v2']
     for i, model in enumerate(myModels):
         model = preTrain(_config, model)

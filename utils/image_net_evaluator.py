@@ -58,7 +58,7 @@ class ImageNetEvaluator:
     For validation of a trained model using the ImageNet dataset.
     """
 
-    def __init__(self, images_dir: str, image_size: int, batch_size: int = 128,
+    def __init__(self, images_dir: str, image_size: int, batch_size: int = conf.evaluation['batch_size'],
                  num_workers: int = 32, num_val_samples_per_class: int = conf.dataset["num_val_samples_per_class"] ):
         """
         :param images_dir: The path to the data directory
