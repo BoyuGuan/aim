@@ -51,7 +51,7 @@ if __name__ == '__main__':
     resnet50 = models.resnet50()
     mobilenet_v2 = models.mobilenet_v2()
     myModels = [resnet18, resnet50, mobilenet_v2]
-    modelName  = ['resNet18', 'resNet50', 'mobileNet_v2']
+    modelName  = ['resnet18', 'resnet50', 'mobilenet_v2']
     for i, model in enumerate(myModels):
         model = preTrain(_config, model)
         torch.save(model, os.path.join(_config.model_dir, 'pre_trained_' + modelName[i] + '.pth'))

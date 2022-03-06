@@ -292,7 +292,7 @@ if __name__ == '__main__':
                         you don't need to give it a value, whatever you input, it will be 'benchmark_output/model_channel_pruning_<Y-m-d-H-M-S>'")
     
     _config = parser.parse_args()
-    modelNames = ['resNet18', 'resNet50', 'mobileNet_v2']
+    modelNames = ['resnet18', 'resnet50', 'mobilenet_v2']
     _config.logdir = os.path.join("benchmark_output", modelNames[_config.model] +  "_channel_prunning_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
     os.makedirs(_config.logdir, exist_ok=True)
 
