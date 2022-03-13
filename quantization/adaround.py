@@ -58,6 +58,12 @@ from aimet_torch.adaround.adaround_weight import Adaround, AdaroundParameters
 from aimet_torch.batch_norm_fold import fold_all_batch_norms
 from aimet_torch.quantsim import QuantizationSimModel
 
+
+
+import os.path
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 # imports for data pipelines
 from common import image_net_config
 from utils.image_net_data_loader import ImageNetDataLoader
@@ -136,7 +142,7 @@ def apply_adaround_and_find_quantized_accuracy(model: torch.nn.Module, evaluator
     """
 
     bn_folded_model = copy.deepcopy(model)
-    _ = fold_all_batch_norms(bn_folded_model, input_shapes=(1, 3, 224, 224))
+    _ = fold_all_batch_norms(bn_folded_model, input_shapes=(1, 3, 32, 32))
 
     input_shape = (1, image_net_config.dataset['image_channels'],
                    image_net_config.dataset['image_width'],
@@ -196,8 +202,10 @@ def adaround_example(config: argparse.Namespace):
     # Instantiate Data Pipeline for evaluation and training
     data_pipeline = ImageNetDataPipeline(config)
 
-    # Load the pretrained resnet18 model
-    model = models.resnet18(pretrained=True)
+    # Load the config model
+    modelNames = ['resnet18', 'resnet50', 'mobilenet_v2']
+    model = torch.load('./preTrainedModel/pre_trained_' + modelNames[_config.model] + '.pth')
+
     if config.use_cuda:
         model.to(torch.device('cuda'))
     model = model.eval()
@@ -220,7 +228,6 @@ def adaround_example(config: argparse.Namespace):
 
 
 if __name__ == '__main__':
-    default_logdir = os.path.join("benchmark_output", "adaround" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
 
     parser = argparse.ArgumentParser(
         description='Apply Adaround on pretrained ResNet18 model and evaluate on ImageNet dataset')
@@ -230,20 +237,27 @@ if __name__ == '__main__':
                         help="Path to a directory containing ImageNet dataset.\n\
                               This folder should conatin at least 2 subfolders:\n\
                               'train': for training dataset and 'val': for validation dataset")
-    parser.add_argument('--use_cuda', action='store_true',
-                        required=True,
+    parser.add_argument('--use_cuda', action='store_true', required=True,
                         help='Add this flag to run the test on GPU.')
 
     parser.add_argument('--logdir', type=str,
-                        default=default_logdir,
+                        default='./',
                         help="Path to a directory for logging.\
-                              Default value is 'benchmark_output/weight_svd_<Y-m-d-H-M-S>'")
+                        you don't need to give it a value, whatever you input, it will be 'benchmark_output/model_name_adaround_<Y-m-d-H-M-S>'")
+    
+    parser.add_argument('--model', type=int, required=True,
+                help="The model you want to compress, \n\
+                    0 means resnet18, \n\
+                    1 means resnet50, \n\
+                    2 means mobilenet_v2")
 
     _config = parser.parse_args()
 
+    modelNames = ['resnet18', 'resnet50', 'mobilenet_v2']
+    _config.logdir = os.path.join("benchmark_output", modelNames[_config.model] +  "_adaround_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
     os.makedirs(_config.logdir, exist_ok=True)
 
-    fileHandler = logging.FileHandler(os.path.join(_config.logdir, "test.log"))
+    fileHandler = logging.FileHandler(os.path.join(_config.logdir, modelNames[_config.model]+"_adaround.log"))
     fileHandler.setFormatter(formatter)
     logger.addHandler(fileHandler)
 
