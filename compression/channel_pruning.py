@@ -155,7 +155,7 @@ def aimet_channel_pruning(model: torch.nn.Module, evaluator: aimet_common.defs.E
                                                                num_comp_ratio_candidates=10)
 
     # Configure the auto mode compression. Ignore the first layer of the model (model.conv1).
-    auto_params = aimet_torch.defs.ChannelPruningParameters.AutoModeParams(greedy_params)
+    auto_params = aimet_torch.defs.ChannelPruningParameters.AutoModeParams(greedy_params, modules_to_ignore=[model.conv1] )
 
     # Configure the parameters for channel pruning compression
     # 50000 reconstruction samples will give better results and is recommended; however we use 5000 here as an example.
@@ -209,7 +209,7 @@ def channel_pruning_example(config: argparse.Namespace):
     data_pipeline = ImageNetDataPipeline(config)
 
     # Load the pretrained model
-    modelNames = ['resNet18', 'resNet50', 'mobileNet_v2']
+    modelNames = ['resnet18', 'resnet50', 'mobilenet_v2']
     model = torch.load('./preTrainedModel/pre_trained_' + modelNames[_config.model] + '.pth')
 
     if config.use_cuda:
@@ -218,13 +218,14 @@ def channel_pruning_example(config: argparse.Namespace):
 
     # Calculate floating point accuracy
     accuracy = data_pipeline.evaluate(model, use_cuda=config.use_cuda)
+    logger.info("This is my base resnet50 model")
     logger.info("Original Model top-1 accuracy = %.2f", accuracy)
 
     logger.info("Starting Channel Pruning")
 
     # Compress the model using AIMET Channel Pruning
     # in auto mode, AIMET uses the Greedy Compression-Ratio Selection algorithm
-    data_loader = ImageNetDataLoader(is_training=True, images_dir=_config.dataset_dir, image_size=224).data_loader
+    data_loader = ImageNetDataLoader(is_training=True, images_dir=_config.dataset_dir, image_size=32).data_loader
     compressed_model, stats = aimet_channel_pruning(model=model, evaluator=data_pipeline.evaluate,
                                                     data_loader=data_loader)
 
@@ -283,9 +284,9 @@ if __name__ == '__main__':
     
     parser.add_argument('--model', type=int, required=True,
                     help="The model you want to compress, \n\
-                        0 means ResNet18, \n\
-                        1 means ResNet50, \n\
-                        2 means mobileNetV2")
+                        0 means resnet18, \n\
+                        1 means resnet50, \n\
+                        2 means mobilenet_v2")
     
     parser.add_argument('--logdir', type=str, default='./',
                     help="Path to a directory for logging.\
@@ -296,7 +297,7 @@ if __name__ == '__main__':
     _config.logdir = os.path.join("benchmark_output", modelNames[_config.model] +  "_channel_prunning_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
     os.makedirs(_config.logdir, exist_ok=True)
 
-    fileHandler = logging.FileHandler(os.path.join(_config.logdir, "test.log"))
+    fileHandler = logging.FileHandler(os.path.join(_config.logdir, modelNames[_config.model] +"0.5.log"))
     fileHandler.setFormatter(formatter)
     logger.addHandler(fileHandler)
 
