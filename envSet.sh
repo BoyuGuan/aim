@@ -1,4 +1,4 @@
-export LD_LIBRARY_PATH=~/anaconda3/envs/graduate/lib
-source /home/boyuguan/anaconda3/envs/graduate/lib/python3.6/site-packages/aimet_common/bin/envsetup.sh
-export LD_LIBRARY_PATH=/home/boyuguan/anaconda3/envs/graduate/lib/python3.6/site-packages/aimet_common/x86_64-linux-gnu:/home/boyuguan/anaconda3/envs/graduate/lib/python3.6/site-packages/aimet_common:$LD_LIBRARY_PATH
-if [[ $PYTHONPATH = "" ]]; then export PYTHONPATH=/home/boyuguan/anaconda3/envs/graduate/lib/python3.6/site-packages/aimet_common/x86_64-linux-gnu; else export PYTHONPATH=/home/boyuguan/anaconda3/envs/graduate/lib/python3.6/site-packages/aimet_common/x86_64-linux-gnu:$PYTHONPATH; fi
+export LD_LIBRARY_PATH=~/anaconda3/envs/aimet/lib
+source /home/guan/anaconda3/envs/aimet/lib/python3.6/site-packages/aimet_common/bin/envsetup.sh
+export LD_LIBRARY_PATH=/home/guan/anaconda3/envs/aimet/lib/python3.6/site-packages/aimet_common/x86_64-linux-gnu:/home/guan/anaconda3/envs/aimet/lib/python3.6/site-packages/aimet_common:$LD_LIBRARY_PATH
+if [[ $PYTHONPATH = "" ]]; then export PYTHONPATH=/home/guan/anaconda3/envs/aimet/lib/python3.6/site-packages/aimet_common/x86_64-linux-gnu; else export PYTHONPATH=/home/guan/anaconda3/envs/aimet/lib/python3.6/site-packages/aimet_common/x86_64-linux-gnu:$PYTHONPATH; fi

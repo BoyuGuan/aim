@@ -140,7 +140,7 @@ class ImageNetTrainer:
                     current_epoch, max_epochs, avg_loss / max_iterations, eval_accuracy)
 
     def train(self, model: nn.Module, max_epochs: int = 20, learning_rate: int = 0.1,
-              weight_decay: float = 1e-4, decay_rate: float = 0.1, learning_rate_schedule: list = None,
+              weight_decay: float = 5e-4, decay_rate: float = 0.1, learning_rate_schedule: list = None,
               debug_steps: int = 1000, use_cuda: bool = False):
         """
         Train the specified model using the ImageNet dataset.

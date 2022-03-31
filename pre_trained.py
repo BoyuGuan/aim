@@ -1,5 +1,8 @@
 import os
 import argparse
+import logging
+from datetime import datetime
+
 
 import torch
 from torchvision import models
@@ -7,6 +10,12 @@ from torchvision import models
 # imports for data pipelines
 from common import image_net_config
 from utils.image_net_trainer import ImageNetTrainer
+
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO) 
+formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
+
 
 def preTrain(_config: argparse.Namespace, model: torch.nn.Module):
     """pre-train a model and then save that.
@@ -33,25 +42,30 @@ if __name__ == '__main__':
         help="Path to a directory containing ImageNet dataset.\n\
             This folder should conatin at least 2 subfolders:\n'train': for training dataset and 'val': for validation dataset")
     parser.add_argument('--use_cuda', action='store_true', required=True, help='Add this flag to run the test on GPU.')
-    parser.add_argument('--epoches', type=int, default=50, help='Number of epoches pretrained')
+    parser.add_argument('--epoches', type=int, default=100, help='Number of epoches pretrained')
     parser.add_argument('--model_dir', type=str, default='./preTrainedModel', help='Number of epoches pretrained')
-    parser.add_argument('--learning_rate', type=float, default=1e-2,
-                    help="A float type learning rate for model finetuning.\n  Default is 0.01")
-    parser.add_argument('--learning_rate_schedule', type=list, default=[5, 10],
+    parser.add_argument('--learning_rate', type=float, default=0.1,
+                    help="A float type learning rate for model finetuning.\n  Default is 0.1")
+    parser.add_argument('--learning_rate_schedule', type=list, default=[40, 70],
                         help="A list of epoch indices for learning rate schedule used in finetuning.\n\
                                 Check https://pytorch.org/docs/stable/_modules/torch/optim/lr_scheduler.html#MultiStepLR for more details.\n\
-                                Default is [5, 10]")
+                                Default is [40, 70]")
 
     _config = parser.parse_args()
-    os.makedirs(_config.model_dir, exist_ok=True)
-    if _config.use_cuda and not torch.cuda.is_available():
-        raise RuntimeError("Found no CUDA Device while use_cuda is selected")
+    _config.logdir = os.path.join("pretrian_benchmark_output", "resnet50" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+    os.makedirs(_config.logdir, exist_ok=True)
 
-    resnet18 = models.resnet18()
-    resnet50 = models.resnet50()
-    mobilenet_v2 = models.mobilenet_v2()
-    myModels = [resnet18, resnet50, mobilenet_v2]
-    modelName  = ['resnet18', 'resnet50', 'mobilenet_v2']
-    for i, model in enumerate(myModels):
-        model = preTrain(_config, model)
-        torch.save(model, os.path.join(_config.model_dir, 'pre_trained_' + modelName[i] + '.pth'))
+    fileHandler = logging.FileHandler(os.path.join(_config.logdir, "pre_train_resnet50.log"))
+    fileHandler.setLevel(logging.INFO)
+    fileHandler.setFormatter(formatter)
+
+    commandHandler = logging.StreamHandler()
+    commandHandler.setLevel(logging.INFO)
+    commandHandler.setFormatter(formatter)
+    logger.addHandler(fileHandler)
+    logger.addHandler(commandHandler)
+
+    model = models.resnet50()
+    model = preTrain(_config, model)
+
+    torch.save(model, os.path.join(_config.model_dir, 'test_pre_trained_resnet50.pth'))

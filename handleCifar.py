@@ -46,5 +46,5 @@ def handleCifar(dataSetDir):
 
 
 if __name__ == '__main__':
-    dataSetDir = './temp/cifar-10-batches-py'
+    dataSetDir = '../temp/cifar-10-batches-py'
     handleCifar(dataSetDir)

@@ -137,6 +137,11 @@ class ImageNetDataPipeline:
                       learning_rate_schedule=self._config.learning_rate_schedule, use_cuda=self._config.use_cuda)
 
         torch.save(model, os.path.join(self._config.logdir, 'compressed_model_finetuned.pth'))
+        
+        # Calculate and log the accuracy of compressed-finetuned model
+        accuracy = data_pipeline.evaluate(compressed_model, use_cuda=self._config.use_cuda)
+        logger.info("Finetuned Compressed Model top-1 accuracy = %.2f", accuracy)
+        logger.info("Model Finetuning Complete")
 
 
 def aimet_channel_pruning(model: torch.nn.Module, evaluator: aimet_common.defs.EvalFunction,
@@ -228,6 +233,8 @@ def channel_pruning_example(config: argparse.Namespace):
     data_loader = ImageNetDataLoader(is_training=True, images_dir=_config.dataset_dir, image_size=32).data_loader
     compressed_model, stats = aimet_channel_pruning(model=model, evaluator=data_pipeline.evaluate,
                                                     data_loader=data_loader)
+    # Save the compressed model
+    torch.save(compressed_model, os.path.join(config.logdir, 'compressed_model_not_finted.pth'))
 
     logger.info(stats)
     with open(os.path.join(config.logdir, 'log.txt'), "w") as outfile:
@@ -243,13 +250,8 @@ def channel_pruning_example(config: argparse.Namespace):
     logger.info("Starting Model Finetuning")
     data_pipeline.finetune(compressed_model)
 
-    # Calculate and log the accuracy of compressed-finetuned model
-    accuracy = data_pipeline.evaluate(compressed_model, use_cuda=config.use_cuda)
-    logger.info("Finetuned Compressed Model top-1 accuracy = %.2f", accuracy)
-    logger.info("Model Finetuning Complete")
 
-    # Save the compressed model
-    torch.save(compressed_model, os.path.join(config.logdir, 'compressed_model_not_finted.pth'))
+
 
 
 if __name__ == '__main__':
@@ -269,9 +271,9 @@ if __name__ == '__main__':
                         help='Add this flag to run the test on GPU.')
 
     parser.add_argument('--epochs', type=int,
-                        default=20,
+                        default=200,
                         help="Number of epochs for finetuning.\n\
-                              Default is 20")
+                              Default is 200")
     parser.add_argument('--learning_rate', type=float,
                         default=1e-2,
                         help="A float type learning rate for model finetuning.\n\
