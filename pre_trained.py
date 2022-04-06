@@ -12,7 +12,7 @@ from common import image_net_config
 from utils.image_net_trainer import ImageNetTrainer
 
 
-logger = logging.getLogger()
+logger = logging.getLogger('compression')
 logger.setLevel(logging.INFO) 
 formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
 
@@ -46,16 +46,16 @@ if __name__ == '__main__':
     parser.add_argument('--model_dir', type=str, default='./preTrainedModel', help='Number of epoches pretrained')
     parser.add_argument('--learning_rate', type=float, default=0.1,
                     help="A float type learning rate for model finetuning.\n  Default is 0.1")
-    parser.add_argument('--learning_rate_schedule', type=list, default=[40, 70],
+    parser.add_argument('--learning_rate_schedule', type=list, default=[20, 40, 60, 80],
                         help="A list of epoch indices for learning rate schedule used in finetuning.\n\
                                 Check https://pytorch.org/docs/stable/_modules/torch/optim/lr_scheduler.html#MultiStepLR for more details.\n\
-                                Default is [40, 70]")
+                                Default is [20, 40, 60, 80]")
 
     _config = parser.parse_args()
     _config.logdir = os.path.join("pretrian_benchmark_output", "resnet50" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
     os.makedirs(_config.logdir, exist_ok=True)
 
-    fileHandler = logging.FileHandler(os.path.join(_config.logdir, "pre_train_resnet50.log"))
+    fileHandler = logging.FileHandler(os.path.join(_config.logdir, "finetune_resnet50-1.log"))
     fileHandler.setLevel(logging.INFO)
     fileHandler.setFormatter(formatter)
 
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     logger.addHandler(fileHandler)
     logger.addHandler(commandHandler)
 
-    model = models.resnet50()
+    model = torch.load('./menglin/menglinModel/resnet50-1.pth')
     model = preTrain(_config, model)
 
-    torch.save(model, os.path.join(_config.model_dir, 'test_pre_trained_resnet50.pth'))
+    torch.save(model, os.path.join(_config.model_dir, 'finetune_resnet50-1.pth'))

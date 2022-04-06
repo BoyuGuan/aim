@@ -49,7 +49,8 @@ from utils.image_net_data_loader import ImageNetDataLoader
 from utils.image_net_evaluator import ImageNetEvaluator
 import common.image_net_config as conf
 
-logger = logging.getLogger('Trainer')
+# logger = logging.getLogger('Trainer')
+logger = logging.getLogger('myCompression')
 
 
 class ImageNetTrainer:

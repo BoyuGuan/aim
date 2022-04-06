@@ -47,6 +47,12 @@ from datetime import datetime
 from decimal import Decimal
 from torchvision import models
 import torch
+import time
+
+import os.path
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 
 # imports for AIMET
 import aimet_common.defs
@@ -60,9 +66,10 @@ from common import image_net_config
 from utils.image_net_evaluator import ImageNetEvaluator
 from utils.image_net_trainer import ImageNetTrainer
 
-logger = logging.getLogger('TorchSpatialSVD')
+logger = logging.getLogger('myCompression')
+logger.setLevel(logging.INFO) 
 formatter = logging.Formatter('%(asctime)s : %(name)s - %(levelname)s - %(message)s')
-logging.basicConfig(format=formatter)
+
 
 
 ###
@@ -131,14 +138,21 @@ class ImageNetDataPipeline:
                                   num_workers=image_net_config.train['num_workers'])
         trainer.train(model, max_epochs=self._config.epochs, learning_rate=self._config.learning_rate,
                       learning_rate_schedule=self._config.learning_rate_schedule, use_cuda=self._config.use_cuda)
-        torch.save(model, os.path.join(self._config.logdir, 'finetuned_model.pth'))
+        torch.save(model, os.path.join(self._config.logdir, 'svd_finetuned_model.pth'))
+        
+        # Calculate and log the accuracy of compressed-finetuned model
+        accuracy = self.evaluate(model, use_cuda=self._config.use_cuda)
+        logger.info("Finetuned Compressed Model top-1 accuracy = %.2f", accuracy)
+        logger.info("Model Finetuning Complete")
 
-def aimet_spatial_svd(model: torch.nn.Module,
+def aimet_spatial_svd(model: torch.nn.Module,compressionRatio: float, metric_mac: bool,
                       evaluator: aimet_common.defs.EvalFunction):
     """
     Compresses the model using AIMET's Spatial SVD auto mode compression scheme.
 
     :param model: The model to compress
+    :param compressionRatio: compression ratio of teh model 
+    :param metric_mac: whether use mac as the metric, True is mac, False is mem 
     :param evaluator: Evaluator used during compression
     :param data_loader: DataLoader used during compression
     :return: A tuple of compressed model and its statistics
@@ -147,7 +161,7 @@ def aimet_spatial_svd(model: torch.nn.Module,
     # create the parameters for AIMET to compress on auto mode.
     # please refer to the API documentation for other schemes (i.e weight svd & channel prunning)
     # and mode (manual)
-    greedy_params = aimet_torch.defs.GreedySelectionParameters(target_comp_ratio=Decimal(0.5),
+    greedy_params = aimet_torch.defs.GreedySelectionParameters(target_comp_ratio=Decimal(compressionRatio),
                                                                num_comp_ratio_candidates=10)
     auto_params = aimet_torch.defs.SpatialSvdParameters.AutoModeParams(greedy_params,
                                                                        modules_to_ignore=[model.conv1])
@@ -155,8 +169,15 @@ def aimet_spatial_svd(model: torch.nn.Module,
                                                    auto_params)
 
     scheme = CompressionScheme.spatial_svd
-    metric = CostMetric.mac
 
+    metric = None
+    if metric_mac:
+        metric = aimet_common.defs.CostMetric.mac  # mac or memory
+        logger.info('the metric is mac')
+    else:
+        metric = aimet_common.defs.CostMetric.memory  
+        logger.info('the metric is memory')
+    beginCompressionTime = time.time()
     results = ModelCompressor.compress_model(model=model,
                                              eval_callback=evaluator,
                                              eval_iterations=10,
@@ -164,6 +185,9 @@ def aimet_spatial_svd(model: torch.nn.Module,
                                              compress_scheme=scheme,
                                              cost_metric=metric,
                                              parameters=params)
+    endCompressionTime = time.time()
+    logger.info('cost time to compression is ' + str(endCompressionTime - beginCompressionTime))
+
     return results
 
 
@@ -199,19 +223,19 @@ def spatial_svd_example(config: argparse.Namespace):
     # Loads the pretrained resnet18 model
     
     #调用模型 
-    model = models.resnet18()
-    #提取fc层中固定的参数 
-    fc_features = model.fc.in_features 
-    #修改类别为10 
-    model.fc = torch.nn.Linear(fc_features, 10)
+    modelNames = ['resnet18', 'resnet50', 'vgg19', 'mobilenetv2']
+    model = torch.load('./preTrainedModel/' + modelNames[config.model] + '.pth')
+    logger.info("This is my"+ modelNames[config.model] +" model")
 
-    data_pipeline.train(model)
-
-    torch.save(compressed_model, os.path.join(config.logdir, 'original_model.pth'))
+    # #提取fc层中固定的参数 
+    # fc_features = model.fc.in_features 
+    # #修改类别为10 
+    # model.fc = torch.nn.Linear(fc_features, 10)
 
     if config.use_cuda:
         model.to(torch.device('cuda'))
     model.eval()
+
     # Calculates floating point accuracy
     accuracy = data_pipeline.evaluate(model, use_cuda=config.use_cuda)
 
@@ -219,40 +243,31 @@ def spatial_svd_example(config: argparse.Namespace):
 
     # Compress the model using AIMET Weight SVD
     logger.info("Starting Spatial SVD")
-    compressed_model, stats = aimet_spatial_svd(model=model, evaluator=data_pipeline.evaluate)
-
+    compressed_model, stats = aimet_spatial_svd(model=model, compressionRatio=config.compression_ratio,
+                                                metric_mac=config.metric_mac,
+                                                evaluator=data_pipeline.evaluate)
     logger.info(stats)
     with open(os.path.join(config.logdir, 'log.txt'), "w") as outfile:
         outfile.write("%s\n\n" % (stats))
-    print('\n%s\n' %(stats))
 
     # Calculate and log the accuracy of compressed model
     accuracy = data_pipeline.evaluate(compressed_model, use_cuda=config.use_cuda)
-    logger.info("Compressed Model Top-1 accuracy = %.2f", accuracy)
+    logger.info("After SVD, Model Top-1 accuracy = %.2f", accuracy)
 
     logger.info("Spatial SVD Complete")
 
-    # Finetune the compressed model
-    logger.info("Starting Model Finetuning")
-    data_pipeline.finetune(compressed_model)
-
-    # Calculate and log the accuracy of compressed-finetuned model
-    accuracy = data_pipeline.evaluate(compressed_model, use_cuda=config.use_cuda)
-    logger.info("Finetuned Compressed Model top-1 accuracy = %.2f", accuracy)
-
-    logger.info("Model Finetuning Complete")
-
-    # Save the compressed model
-    torch.save(compressed_model, os.path.join(config.logdir, 'compressed_model_finted.pth'))
+    if config.epochs:
+        # Finetune the compressed model
+        logger.info("Starting Model Finetuning")
+        data_pipeline.finetune(compressed_model)
 
 
 if __name__ == '__main__':
 
-    os.system('pause')
-    default_logdir = os.path.join("benchmark_output", "spatial_svd_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
-
     parser = argparse.ArgumentParser(
         description='Apply Spatial SVD on pretrained ResNet18 model and finetune it for ImageNet dataset')
+
+    parser.print_help()
 
     parser.add_argument('--dataset_dir', type=str,
                         required=True,
@@ -262,33 +277,48 @@ if __name__ == '__main__':
     parser.add_argument('--use_cuda', action='store_true',
                         required=True,
                         help='Add this flag to run the test on GPU.')
-
-    parser.add_argument('--logdir', type=str,
-                        default=default_logdir,
-                        help="Path to a directory for logging.\
-                              Default value is 'benchmark_output/weight_svd_<Y-m-d-H-M-S>'")
-
+    parser.add_argument('--metric_mac', action='store_true',
+                        help='wheter use mac as metric, default is False.')
+    parser.add_argument('--compression_ratio', type=float,
+                        default=0.5,
+                        help='compression ratrio of the model, default is 0.5.')
     parser.add_argument('--epochs', type=int,
-                        default=15,
+                        default=80,
                         help="Number of epochs for finetuning.\n\
-                              Default is 15")
+                              Default is 80")
     parser.add_argument('--learning_rate', type=float,
-                        default=1e-2,
+                        default=0.1,
                         help="A float type learning rate for model finetuning.\n\
-                              Default is 0.01")
+                              Default is 0.1")
     parser.add_argument('--learning_rate_schedule', type=list,
-                        default=[5, 10],
+                        default=[30, 60 ],
                         help="A list of epoch indices for learning rate schedule used in finetuning.\n\
                               Check https://pytorch.org/docs/stable/_modules/torch/optim/lr_scheduler.html#MultiStepLR for more details.\n\
-                              Default is [5, 10]")
+                              Default is [30, 60 ]]")
+    parser.add_argument('--model', type=int, required=True,
+                    help="The model you want to compress, \n\
+                        0 means resnet18, \n\
+                        1 means resnet50, \n\
+                        2 means vgg19, \n\
+                        3 means mobilenetv2")
+    parser.add_argument('--logdir', type=str, default='./',
+                    help="Path to a directory for logging.\
+                        you don't need to give it a value, whatever you input, it will be 'benchmark_output/model_channel_pruning_<Y-m-d-H-M-S>'")
 
     _config = parser.parse_args()
+    modelNames = ['resnet18', 'resnet50', 'vgg19', 'mobilenetv2']
 
+    _config.logdir = os.path.join("benchmark_output", modelNames[_config.model] +  "_SVD_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
     os.makedirs(_config.logdir, exist_ok=True)
 
-    fileHandler = logging.FileHandler(os.path.join(_config.logdir, "test.log"))
+    fileHandler = logging.FileHandler(os.path.join(_config.logdir, modelNames[_config.model]+'_SVD_metricMac_'+str(_config.metric_mac)+'_'+str(_config.compression_ratio)+'_' +".log"))
+    fileHandler.setLevel(logging.INFO)
     fileHandler.setFormatter(formatter)
+    commandHandler = logging.StreamHandler()
+    commandHandler.setLevel(logging.INFO)
+    commandHandler.setFormatter(formatter)
     logger.addHandler(fileHandler)
+    logger.addHandler(commandHandler)
 
     if _config.use_cuda and not torch.cuda.is_available():
         logger.error('use_cuda is selected but no cuda device found.')
