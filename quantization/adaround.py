@@ -50,6 +50,11 @@ from typing import Tuple
 from torchvision import models
 import torch
 import torch.utils.data as torch_data
+import time
+
+import os.path
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 # imports for AIMET
 import aimet_common
@@ -58,12 +63,6 @@ from aimet_torch.adaround.adaround_weight import Adaround, AdaroundParameters
 from aimet_torch.batch_norm_fold import fold_all_batch_norms
 from aimet_torch.quantsim import QuantizationSimModel
 
-
-
-import os.path
-import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 # imports for data pipelines
 from common import image_net_config
 from utils.image_net_data_loader import ImageNetDataLoader
@@ -71,7 +70,7 @@ from utils.image_net_evaluator import ImageNetEvaluator
 
 logger = logging.getLogger('TorchAdaround')
 formatter = logging.Formatter('%(asctime)s : %(name)s - %(levelname)s - %(message)s')
-logging.basicConfig(format=formatter)
+logger.setLevel(logging.INFO) 
 
 
 ###
@@ -204,7 +203,7 @@ def adaround_example(config: argparse.Namespace):
 
     # Load the config model
     modelNames = ['resnet18', 'resnet50', 'mobilenet_v2']
-    model = torch.load('./preTrainedModel/pre_trained_' + modelNames[_config.model] + '.pth')
+    model = torch.load('./preTrainedModel/' + modelNames[_config.model] + '.pth')
 
     if config.use_cuda:
         model.to(torch.device('cuda'))

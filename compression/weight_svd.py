@@ -250,8 +250,10 @@ def weight_svd_example(config: argparse.Namespace):
     # Instantiate Data Pipeline for evaluation and training
     data_pipeline = ImageNetDataPipeline(config)
 
-    # Load the pretrained resnet18 model
-    model = models.resnet18(pretrained=True)
+    # Load the pretrained model
+    modelNames = ['resnet18', 'resnet50', 'vgg19', 'mobilenetv2']
+    model = torch.load('./preTrainedModel/' + modelNames[config.model] + '.pth')
+    logger.info("This is my"+ modelNames[config.model] +" model")
     if config.use_cuda:
         model.to(torch.device('cuda'))
     model.eval()
@@ -265,8 +267,6 @@ def weight_svd_example(config: argparse.Namespace):
     compressed_model, stats = aimet_weight_svd(model=model, evaluator=data_pipeline.evaluate)
 
     logger.info(stats)
-    with open(os.path.join(config.logdir, 'log.txt'), "w") as outfile:
-        outfile.write("%s\n\n" % (stats))
 
     # Calculate and log the accuracy of compressed model
     accuracy = data_pipeline.evaluate(compressed_model, use_cuda=config.use_cuda)

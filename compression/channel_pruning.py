@@ -69,8 +69,8 @@ from utils.image_net_evaluator import ImageNetEvaluator
 from utils.image_net_trainer import ImageNetTrainer
 
 logger = logging.getLogger('myCompression')
-logger.setLevel(logging.INFO) 
 formatter = logging.Formatter('%(asctime)s : %(name)s - %(levelname)s - %(message)s')
+logger.setLevel(logging.INFO) 
 
 
 #
@@ -137,7 +137,10 @@ class ImageNetDataPipeline:
         trainer.train(model, max_epochs=self._config.epochs, learning_rate=self._config.learning_rate,
                       learning_rate_schedule=self._config.learning_rate_schedule, use_cuda=self._config.use_cuda)
 
-        torch.save(model, os.path.join(self._config.logdir, 'compressed_model_finetuned.pth'))
+        modelNames = ['resnet18', 'resnet50', 'vgg19', 'mobilenetv2']
+        torch.save(model, os.path.join(self._config.logdir,  "channel_prunning" +\
+             modelNames[self._config.model]+'_metricMac_'+str(self._config.metric_mac)+'_'+\
+                 str(self._config.compression_ratio)+ '_' + datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '_compressed_model_finetuned.pth'))
 
         # Calculate and log the accuracy of compressed-finetuned model
         accuracy = self.evaluate(model, use_cuda=self._config.use_cuda)
@@ -259,7 +262,9 @@ def channel_pruning_example(config: argparse.Namespace):
 
     logger.info("Model Channel Pruning Complete")
     # Save the compressed model
-    torch.save(compressed_model, os.path.join(config.logdir, 'compressed_model_not_finted.pth'))
+    torch.save(compressed_model, os.path.join(config.logdir,  "channel_prunning_" +\
+            modelNames[config.model]+'_metricMac_'+str(config.metric_mac)+'_'+\
+                str(config.compression_ratio)+ '_' + datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '_compressed_model_not_finetuned.pth'))
     
     if config.epochs:
         # Finetune the compressed model
@@ -316,7 +321,7 @@ if __name__ == '__main__':
     _config = parser.parse_args()
     modelNames = ['resnet18', 'resnet50', 'vgg19', 'mobilenetv2']
 
-    _config.logdir = os.path.join("benchmark_output", modelNames[_config.model] +  "_channel_prunning_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+    _config.logdir = os.path.join("benchmark_output", "channel_prunning", modelNames[_config.model]+'_metricMac_'+str(_config.metric_mac)+'_'+str(_config.compression_ratio)+ '_' + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
     os.makedirs(_config.logdir, exist_ok=True)
 
     fileHandler = logging.FileHandler(os.path.join(_config.logdir, modelNames[_config.model]+'_metricMac_'+str(_config.metric_mac)+'_'+str(_config.compression_ratio)+'_' +".log"))
