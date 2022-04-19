@@ -165,6 +165,7 @@ def aimet_weight_svd(model: torch.nn.Module,compressionRatio: float, metric_mac:
     # API will evaluate 0.1, 0.2, ..., 0.9, 1.0 ratio (total 10 candidates)
     # at each layer
     num_comp_ratio_candidates = 10
+    logger.info('compression ratio is %.4f' , compressionRatio)
 
     # Creating Greedy selection parameters:
     greedy_params = aimet_torch.defs.GreedySelectionParameters(target_comp_ratio= Decimal(compressionRatio) ,
@@ -266,26 +267,22 @@ def weight_svd_example(config: argparse.Namespace):
     logger.info("Starting Weight SVD")
     compressed_model, stats = aimet_weight_svd(model=model, evaluator=data_pipeline.evaluate)
 
-    logger.info(stats)
-
-    # Calculate and log the accuracy of compressed model
-    accuracy = data_pipeline.evaluate(compressed_model, use_cuda=config.use_cuda)
-    logger.info("Compressed Model top-1 accuracy = %.2f", accuracy)
-
-    logger.info("Weight SVD Complete")
-
-    # Finetune the compressed model
-    logger.info("Starting Model Finetuning")
-    data_pipeline.finetune(compressed_model)
-
     # Calculate and log the accuracy of compressed-finetuned model
     accuracy = data_pipeline.evaluate(compressed_model, use_cuda=config.use_cuda)
     logger.info("After Weight SVD, Model top-1 accuracy = %.2f", accuracy)
-
-    logger.info("Model Finetuning Complete")
+    logger.info(stats)
 
     # Save the compressed model
     torch.save(compressed_model, os.path.join(config.logdir, 'compressed_model.pth'))
+
+    if config.epoches:
+
+        # Finetune the compressed model
+        logger.info("Starting Model Finetuning")
+        data_pipeline.finetune(compressed_model)
+
+        logger.info("Model Finetuning Complete")
+
 
 
 if __name__ == '__main__':
@@ -332,7 +329,7 @@ if __name__ == '__main__':
     
     _config = parser.parse_args()
     modelNames = ['resnet18', 'resnet50', 'vgg19', 'mobilenetv2']
-    _config.logdir = os.path.join("benchmark_output", modelNames[_config.model] +  "_channel_prunning_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+    _config.logdir = os.path.join("benchmark_output", "weight_svd" , modelNames[_config.model]+'_metricMac_'+str(_config.metric_mac)+'_'+str(_config.compression_ratio))
     os.makedirs(_config.logdir, exist_ok=True)
 
     fileHandler = logging.FileHandler(os.path.join(_config.logdir, modelNames[_config.model]+'_metricMac_'+str(_config.metric_mac)+'_'+str(_config.compression_ratio)+'_' +".log"))

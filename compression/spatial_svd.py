@@ -161,6 +161,8 @@ def aimet_spatial_svd(model: torch.nn.Module,compressionRatio: float, metric_mac
     # create the parameters for AIMET to compress on auto mode.
     # please refer to the API documentation for other schemes (i.e weight svd & channel prunning)
     # and mode (manual)
+    logger.info('compression ratio is %.4f' , compressionRatio)
+
     greedy_params = aimet_torch.defs.GreedySelectionParameters(target_comp_ratio=Decimal(compressionRatio),
                                                                num_comp_ratio_candidates=10)
     auto_params = aimet_torch.defs.SpatialSvdParameters.AutoModeParams(greedy_params,
@@ -247,14 +249,17 @@ def spatial_svd_example(config: argparse.Namespace):
                                                 metric_mac=config.metric_mac,
                                                 evaluator=data_pipeline.evaluate)
     logger.info(stats)
-    with open(os.path.join(config.logdir, 'log.txt'), "w") as outfile:
-        outfile.write("%s\n\n" % (stats))
 
     # Calculate and log the accuracy of compressed model
     accuracy = data_pipeline.evaluate(compressed_model, use_cuda=config.use_cuda)
     logger.info("After SVD, Model Top-1 accuracy = %.2f", accuracy)
 
     logger.info("Spatial SVD Complete")
+
+    torch.save(compressed_model, os.path.join(config.logdir,  "spatial_svd_" +\
+            modelNames[config.model]+'_metricMac_'+str(config.metric_mac)+'_'+\
+                str(config.compression_ratio)+ '_' + datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '_compressed_model_not_finetuned.pth'))
+
 
     if config.epochs:
         # Finetune the compressed model
@@ -308,7 +313,7 @@ if __name__ == '__main__':
     _config = parser.parse_args()
     modelNames = ['resnet18', 'resnet50', 'vgg19', 'mobilenetv2']
 
-    _config.logdir = os.path.join("benchmark_output", modelNames[_config.model] +  "_SVD_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+    _config.logdir = os.path.join("benchmark_output", "spatial_SVD", modelNames[_config.model] +  "_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
     os.makedirs(_config.logdir, exist_ok=True)
 
     fileHandler = logging.FileHandler(os.path.join(_config.logdir, modelNames[_config.model]+'_SVD_metricMac_'+str(_config.metric_mac)+'_'+str(_config.compression_ratio)+'_' +".log"))

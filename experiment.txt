@@ -13,16 +13,38 @@ channel pruning resnet18
 2022-04-14 21:17:58,361 : myFinetune - INFO - channel_prunning_resnet18_metricMac_True_0.8_2022-04-14-11-45-53_compressed_model_not_finetuned.pth__88.63
 
 channel pruning resnet50 [(14.816150665283203, 2941.75), (12.694087982177734, 2941.75), (12.42123794555664, 2941.75), (8.4573974609375, 2941.75), (13.638538360595703, 2941.75), (11.165534973144531, 2941.75), (11.165771484375, 2941.75), (11.442974090576172, 2941.75)]
-2022-04-08 17:53:25,470 : myFinetune - INFO - metricMac_True_0.8_compressed_model_not_finted.pth__89.54
-2022-04-08 18:47:02,491 : myFinetune - INFO - metricMac_True_0.4_compressed_model_not_finted.pth__88.73
-2022-04-08 19:41:15,267 : myFinetune - INFO - metricMac_True_0.6_compressed_model_not_finted.pth__89.43
-2022-04-08 20:35:02,371 : myFinetune - INFO - metricMac_False_0.6_compressed_model_not_finted.pth__89.46
-2022-04-08 21:26:13,583 : myFinetune - INFO - metricMac_True_0.2_compressed_model_not_finted.pth__86.87
-2022-04-08 22:17:01,781 : myFinetune - INFO - metricMac_False_0.2_compressed_model_not_finted.pth__87.09
-2022-04-08 23:10:46,929 : myFinetune - INFO - metricMac_False_0.4_compressed_model_not_finted.pth__88.96
-2022-04-09 00:04:15,657 : myFinetune - INFO - metricMac_False_0.8_compressed_model_not_finted.pth__89.54
+2022-04-15 12:17:18,442 : myFinetune - INFO - channel_prunning_resnet50_metricMac_False_0.8_2022-04-15-02-40-35_compressed_model_not_finetuned.pth__89.37
+2022-04-15 13:02:59,920 : myFinetune - INFO - channel_prunning_resnet50_metricMac_False_0.2_2022-04-15-02-40-35_compressed_model_not_finetuned.pth__86.51
+2022-04-15 13:50:44,937 : myFinetune - INFO - channel_prunning_resnet50_metricMac_False_0.4_2022-04-15-03-35-38_compressed_model_not_finetuned.pth__88.92
+2022-04-15 14:39:07,681 : myFinetune - INFO - channel_prunning_resnet50_metricMac_False_0.6_2022-04-15-04-28-45_compressed_model_not_finetuned.pth__89.82
+2022-04-15 15:25:26,394 : myFinetune - INFO - channel_prunning_resnet50_metricMac_True_0.2_2022-04-14-22-59-31_compressed_model_not_finetuned.pth__87.63
+2022-04-15 16:13:14,363 : myFinetune - INFO - channel_prunning_resnet50_metricMac_True_0.4_2022-04-14-23-57-53_compressed_model_not_finetuned.pth__89.04
+2022-04-15 17:01:20,520 : myFinetune - INFO - channel_prunning_resnet50_metricMac_True_0.6_2022-04-15-00-52-44_compressed_model_not_finetuned.pth__88.78
+2022-04-15 17:50:18,408 : myFinetune - INFO - channel_prunning_resnet50_metricMac_True_0.8_2022-04-15-01-34-26_compressed_model_not_finetuned.pth__89.49
 
 
+spatial_svd resnet18  
+[(4.410438537597656, 2081.75), (4.446521759033203, 2081.75), (4.429775238037109, 2081.75), (4.4181671142578125, 2081.75), (4.425960540771484, 2081.75), (4.388862609863281, 2081.75), (4.4202728271484375, 2081.75), (4.461154937744141, 2081.75)]
+2022-04-18 20:49:36,692 : myFinetune - INFO - spatial_svd_resnet18_metricMac_False_0.2_2022-04-18-16-29-09_compressed_model_not_finetuned.pth__87.42
+2022-04-18 21:27:59,050 : myFinetune - INFO - spatial_svd_resnet18_metricMac_False_0.4_2022-04-18-16-31-51_compressed_model_not_finetuned.pth__87.28
+2022-04-18 22:06:40,964 : myFinetune - INFO - spatial_svd_resnet18_metricMac_False_0.6_2022-04-18-16-34-33_compressed_model_not_finetuned.pth__87.24
+2022-04-18 22:45:16,587 : myFinetune - INFO - spatial_svd_resnet18_metricMac_False_0.8_2022-04-18-16-37-14_compressed_model_not_finetuned.pth__87.42
+2022-04-18 23:23:58,616 : myFinetune - INFO - spatial_svd_resnet18_metricMac_True_0.2_2022-04-18-16-18-23_compressed_model_not_finetuned.pth__86.27
+2022-04-19 00:02:48,961 : myFinetune - INFO - spatial_svd_resnet18_metricMac_True_0.4_2022-04-18-16-21-06_compressed_model_not_finetuned.pth__86.4
+2022-04-19 00:41:39,908 : myFinetune - INFO - spatial_svd_resnet18_metricMac_True_0.6_2022-04-18-16-23-49_compressed_model_not_finetuned.pth__86.85
+2022-04-19 01:23:13,216 : myFinetune - INFO - spatial_svd_resnet18_metricMac_True_0.8_2022-04-18-16-26-26_compressed_model_not_finetuned.pth__87.34
+
+
+spatial_svd resnet50  
+[(4.453243255615234, 2021.75), (4.461597442626953, 2021.75), (4.466957092285156, 2021.75), (4.4745941162109375, 2021.75), (4.477317810058594, 2021.75), (4.479930877685547, 2021.75), (4.4957427978515625, 2021.75), (4.508365631103516, 2021.75)]
+2022-04-18 21:34:11,944 : myFinetune - INFO - spatial_svd_resnet50_metricMac_False_0.2_2022-04-18-17-08-08_compressed_model_not_finetuned.pth__87.59
+2022-04-18 22:51:17,751 : myFinetune - INFO - spatial_svd_resnet50_metricMac_False_0.4_2022-04-18-17-14-16_compressed_model_not_finetuned.pth__87.79
+2022-04-19 00:08:49,925 : myFinetune - INFO - spatial_svd_resnet50_metricMac_False_0.6_2022-04-18-17-20-27_compressed_model_not_finetuned.pth__87.96
+2022-04-19 01:26:27,717 : myFinetune - INFO - spatial_svd_resnet50_metricMac_False_0.8_2022-04-18-17-26-39_compressed_model_not_finetuned.pth__88.07
+2022-04-19 02:33:03,226 : myFinetune - INFO - spatial_svd_resnet50_metricMac_True_0.2_2022-04-18-16-43-27_compressed_model_not_finetuned.pth__87.1
+2022-04-19 03:39:54,708 : myFinetune - INFO - spatial_svd_resnet50_metricMac_True_0.4_2022-04-18-16-49-37_compressed_model_not_finetuned.pth__87.43
+2022-04-19 04:45:10,463 : myFinetune - INFO - spatial_svd_resnet50_metricMac_True_0.6_2022-04-18-16-55-46_compressed_model_not_finetuned.pth__88.0
+2022-04-19 05:50:25,675 : myFinetune - INFO - spatial_svd_resnet50_metricMac_True_0.8_2022-04-18-17-01-58_compressed_model_not_finetuned.pth__87.97
 
 
 
