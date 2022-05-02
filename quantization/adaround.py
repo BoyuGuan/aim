@@ -153,12 +153,12 @@ def apply_adaround_and_find_quantized_accuracy(model: torch.nn.Module, evaluator
         dummy_input = torch.rand(input_shape)
 
     # Number of batches to use for computing encodings
-    # Only 5 batches are used here to speed up the process, also the
-    # number of images in these 5 batches should be sufficient for
+    # Only 20 batches are used here to speed up the process, also the
+    # number of images in these 20 batches should be sufficient for
     # compute encodings
-    iterations = 5
+    iterations = 20
 
-    params = AdaroundParameters(data_loader=data_loader, num_batches=5)
+    params = AdaroundParameters(data_loader=data_loader, num_batches=20)
     ada_model = Adaround.apply_adaround(bn_folded_model, dummy_input, params,
                                         path=logdir, filename_prefix='adaround', default_param_bw=8,
                                         default_quant_scheme=QuantScheme.post_training_tf_enhanced)
@@ -253,12 +253,17 @@ if __name__ == '__main__':
     _config = parser.parse_args()
 
     modelNames = ['resnet18', 'resnet50', 'mobilenet_v2']
-    _config.logdir = os.path.join("benchmark_output", modelNames[_config.model] +  "_adaround_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+    _config.logdir = os.path.join("benchmark_output", 'adaround', modelNames[_config.model] +  "_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
     os.makedirs(_config.logdir, exist_ok=True)
 
     fileHandler = logging.FileHandler(os.path.join(_config.logdir, modelNames[_config.model]+"_adaround.log"))
+    fileHandler.setLevel(logging.INFO)
     fileHandler.setFormatter(formatter)
+    commandHandler = logging.StreamHandler()
+    commandHandler.setLevel(logging.INFO)
+    commandHandler.setFormatter(formatter)
     logger.addHandler(fileHandler)
+    logger.addHandler(commandHandler)
 
     if _config.use_cuda and not torch.cuda.is_available():
         logger.error('use_cuda is selected but no cuda device found.')

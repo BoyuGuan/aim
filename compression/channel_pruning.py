@@ -251,8 +251,8 @@ def channel_pruning_example(config: argparse.Namespace):
     # Compress the model using AIMET Channel Pruning
     # in auto mode, AIMET uses the Greedy Compression-Ratio Selection algorithm
     data_loader = ImageNetDataLoader(is_training=True, images_dir=config.dataset_dir, image_size=32).data_loader
-    compressed_model, stats = aimet_channel_pruning(model=model,compressionRatio=config.compression_ratio,
-                                                    metric_mac=config.metric_mac  ,evaluator=data_pipeline.evaluate,
+    compressed_model, stats = aimet_channel_pruning(model=model, compressionRatio=config.compression_ratio,
+                                                    metric_mac=config.metric_mac, evaluator=data_pipeline.evaluate,
                                                     data_loader=data_loader)
     logger.info(stats)
 

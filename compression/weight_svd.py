@@ -265,7 +265,8 @@ def weight_svd_example(config: argparse.Namespace):
 
     # Compress the model using AIMET Weight SVD
     logger.info("Starting Weight SVD")
-    compressed_model, stats = aimet_weight_svd(model=model, evaluator=data_pipeline.evaluate)
+    compressed_model, stats = aimet_weight_svd(model=model, compressionRatio=config.compression_ratio,
+                                                    metric_mac=config.metric_mac, evaluator=data_pipeline.evaluate)
 
     # Calculate and log the accuracy of compressed-finetuned model
     accuracy = data_pipeline.evaluate(compressed_model, use_cuda=config.use_cuda)
@@ -275,7 +276,7 @@ def weight_svd_example(config: argparse.Namespace):
     # Save the compressed model
     torch.save(compressed_model, os.path.join(config.logdir, 'compressed_model.pth'))
 
-    if config.epoches:
+    if config.epochs:
 
         # Finetune the compressed model
         logger.info("Starting Model Finetuning")
