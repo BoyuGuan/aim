@@ -1,3 +1,4 @@
+from cProfile import label
 import os
 import matplotlib.pyplot as plt
 import numpy as np
@@ -21,14 +22,18 @@ def channel_resnet18():
     axs[0, 1].plot( memoryRatioSorted, costTime[np.array(memoryRatioSortedIndex)], '^k:')
     axs[0, 1].set_xlabel('compression ratio (memory)')
     axs[0, 1].set_ylabel('algorithm time cost (s)')
-    axs[1, 0].plot( MACRatioSorted, accBeforeFinetune[np.array(MACRatioSortedIndex)] , '8-.c',MACRatioSorted, accAfterFinetune[np.array(MACRatioSortedIndex)] , 's--y' )
+    axs[1, 0].plot( MACRatioSorted, [90.2] * len(MACRatioSorted) , ',-r' , label='baselien accuracy')
+    axs[1, 0].plot( MACRatioSorted, accAfterFinetune[np.array(MACRatioSortedIndex)] , 's--y' , label='accuracy before finetune')
+    axs[1, 0].plot( MACRatioSorted, accBeforeFinetune[np.array(MACRatioSortedIndex)] , '8-.c', label='accuracy before finetune')
     axs[1, 0].set_xlabel('compression ratio (MAC)')
     axs[1, 0].set_ylabel('accuracy on validation dataset(%)')
-    axs[1, 1].plot( memoryRatioSorted, accBeforeFinetune[np.array(memoryRatioSortedIndex)] , '8-.c',memoryRatioSorted, accAfterFinetune[np.array(memoryRatioSortedIndex)] , 's--y' )
-    axs[1, 1].set_xlabel('compression ratio (MAC)')
+    axs[1, 0].legend()
+    axs[1, 1].plot( memoryRatioSorted, [90.2] * len(MACRatioSorted) , ',-r' , label='baselien accuracy')
+    axs[1, 1].plot(memoryRatioSorted, accAfterFinetune[np.array(memoryRatioSortedIndex)] , 's--y', label='accuracy after finetune')
+    axs[1, 1].plot( memoryRatioSorted, accBeforeFinetune[np.array(memoryRatioSortedIndex)] , '8-.c', label='accuracy before finetune')
+    axs[1, 1].set_xlabel('compression ratio (memory)')
     axs[1, 1].set_ylabel('accuracy on validation dataset(%)')
-
-
+    axs[1, 1].legend()
     fig.set(tight_layout = True)
     # fig.set(dpi = 600)
     plt.savefig(PLOTDIR + '/channel_resnet18.png')
