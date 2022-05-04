@@ -1,4 +1,3 @@
-from cProfile import label
 import os
 import matplotlib.pyplot as plt
 import numpy as np
@@ -35,9 +34,41 @@ def channel_resnet18():
     axs[1, 1].set_ylabel('accuracy on validation dataset(%)')
     axs[1, 1].legend()
     fig.set(tight_layout = True)
-    # fig.set(dpi = 600)
     plt.savefig(PLOTDIR + '/channel_resnet18.png')
 
 
+def channel_resnet50():
+    MACRatio = np.array([0.392186, 0.196126, 0.405257, 0.472652, 0.192403, 0.387988, 0.405073, 0.668017])
+    memoryRatio = np.array([0.272202, 0.230461, 0.278040, 0.303741, 0.231501, 0.273090,  0.271780, 0.747886])
+    accBeforeFinetune = np.array([49.512341, 20.292596, 76.761545, 85.061704, 18.083201, 76.144506, 77.756768, 73.278264])
+    accAfterFinetune = np.array([89.37, 86.51, 88.92, 88.48, 87.63, 89.04, 88.78, 89.49])
+    costTime = np.array([ 3309.1602478027344, 3944.231453895569,  3270.3850288391113, 3158.2146010398865, 4006.2553544044495, 3466.395381450653, 3259.653082847595, 2472.8123886585236])
+
+    fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(10, 10))
+    MACRatioSortedIndex, MACRatioSorted = zip(* sorted([(i, x) for (i ,x) in enumerate(MACRatio) ], key=lambda x : x[1]) ) 
+    axs[0, 0].plot( MACRatioSorted, costTime[np.array(MACRatioSortedIndex)] , '^k:')
+    axs[0, 0].set_xlabel('compression ratio (MAC)')
+    axs[0, 0].set_ylabel('algorithm time cost (s)')
+    memoryRatioSortedIndex, memoryRatioSorted = zip(* sorted([(i, x) for (i ,x) in enumerate(memoryRatio) ] , key=lambda x : x[1]) ) 
+    axs[0, 1].plot( memoryRatioSorted, costTime[np.array(memoryRatioSortedIndex)], '^k:')
+    axs[0, 1].set_xlabel('compression ratio (memory)')
+    axs[0, 1].set_ylabel('algorithm time cost (s)')
+    axs[1, 0].plot( MACRatioSorted, [90.2] * len(MACRatioSorted) , ',-r' , label='baselien accuracy')
+    axs[1, 0].plot( MACRatioSorted, accAfterFinetune[np.array(MACRatioSortedIndex)] , 's--y' , label='accuracy before finetune')
+    axs[1, 0].plot( MACRatioSorted, accBeforeFinetune[np.array(MACRatioSortedIndex)] , '8-.c', label='accuracy before finetune')
+    axs[1, 0].set_xlabel('compression ratio (MAC)')
+    axs[1, 0].set_ylabel('accuracy on validation dataset(%)')
+    axs[1, 0].legend()
+    axs[1, 1].plot( memoryRatioSorted, [90.2] * len(MACRatioSorted) , ',-r' , label='baselien accuracy')
+    axs[1, 1].plot(memoryRatioSorted, accAfterFinetune[np.array(memoryRatioSortedIndex)] , 's--y', label='accuracy after finetune')
+    axs[1, 1].plot( memoryRatioSorted, accBeforeFinetune[np.array(memoryRatioSortedIndex)] , '8-.c', label='accuracy before finetune')
+    axs[1, 1].set_xlabel('compression ratio (memory)')
+    axs[1, 1].set_ylabel('accuracy on validation dataset(%)')
+    axs[1, 1].legend()
+    fig.set(tight_layout = True)
+    plt.savefig(PLOTDIR + '/channel_resnet50.png')
+
+
 if __name__ == '__main__':
-    channel_resnet18()
+    # channel_resnet18()
+    channel_resnet50()
