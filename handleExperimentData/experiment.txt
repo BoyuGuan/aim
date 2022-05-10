@@ -97,7 +97,7 @@ spatial_svd resnet18
 2022-04-19 01:23:13,216 : myFinetune - INFO - spatial_svd_resnet18_metricMac_True_0.8_2022-04-18-16-26-26_compressed_model_not_finetuned.pth__87.34
 
 
-spatial_svd resnet50  
+*******************************************spatial_svd resnet50*******************************************  
 [(4.453243255615234, 2021.75), (4.461597442626953, 2021.75), (4.466957092285156, 2021.75), (4.4745941162109375, 2021.75), (4.477317810058594, 2021.75), (4.479930877685547, 2021.75), (4.4957427978515625, 2021.75), (4.508365631103516, 2021.75)]
 2022-04-18 21:34:11,944 : myFinetune - INFO - spatial_svd_resnet50_metricMac_False_0.2_2022-04-18-17-08-08_compressed_model_not_finetuned.pth__87.59
 2022-04-18 22:51:17,751 : myFinetune - INFO - spatial_svd_resnet50_metricMac_False_0.4_2022-04-18-17-14-16_compressed_model_not_finetuned.pth__87.79
@@ -108,16 +108,27 @@ spatial_svd resnet50
 2022-04-19 04:45:10,463 : myFinetune - INFO - spatial_svd_resnet50_metricMac_True_0.6_2022-04-18-16-55-46_compressed_model_not_finetuned.pth__88.0
 2022-04-19 05:50:25,675 : myFinetune - INFO - spatial_svd_resnet50_metricMac_True_0.8_2022-04-18-17-01-58_compressed_model_not_finetuned.pth__87.97
 
-weight_svd resnet18
+*******************************************weight_svd resnet18*******************************************
 [(4.9183502197265625, 2660.75), (4.33245849609375, 2660.75), (4.370265960693359, 2660.75), (4.3753204345703125, 2660.75), (4.344554901123047, 2306.75), (4.312370300292969, 2306.75), (4.3216552734375, 2306.75), (4.323333740234375, 2306.75)]
-2022-04-19 21:23:04,430 : myFinetune - INFO - resnet18_metricMac_False_0.2.pth__87.99
-2022-04-19 22:02:01,742 : myFinetune - INFO - resnet18_metricMac_False_0.4.pth__88.27
-2022-04-19 22:40:27,209 : myFinetune - INFO - resnet18_metricMac_False_0.6.pth__87.69
-2022-04-19 23:19:18,787 : myFinetune - INFO - resnet18_metricMac_False_0.8.pth__87.99
-2022-04-19 23:58:14,049 : myFinetune - INFO - resnet18_metricMac_True_0.2.pth__84.92
-2022-04-20 00:37:00,819 : myFinetune - INFO - resnet18_metricMac_True_0.4.pth__87.0
-2022-04-20 01:15:20,237 : myFinetune - INFO - resnet18_metricMac_True_0.6.pth__88.34
-2022-04-20 01:53:50,821 : myFinetune - INFO - resnet18_metricMac_True_0.8.pth__87.94
+resnet18_metricMac_False_0.2.pth__87.99
+compression cost time 246.68940234184265
+Baseline model accuracy: 86.017118, Compressed model accuracy: 78.025478
+Compression ratio for memory=0.174902, mac=0.471318
+
+resnet18_metricMac_True_0.2.pth__84.92
+compression cost time 248.41901016235352
+Baseline model accuracy: 86.017118, Compressed model accuracy: 21.725717
+Compression ratio for memory=0.098078, mac=0.156471
+
+resnet18_metricMac_True_0.4.pth__87.0
+compression cost time 245.42773747444153
+Baseline model accuracy: 86.017118, Compressed model accuracy: 36.275876
+Compression ratio for memory=0.112759, mac=0.282467
+
+resnet18_metricMac_True_0.6.pth__88.34
+compression cost time 245.51644611358643
+Baseline model accuracy: 86.017118, Compressed model accuracy: 73.377787
+Compression ratio for memory=0.165290, mac=0.461664
 
 
 weight_svd resnet50
