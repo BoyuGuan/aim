@@ -85,28 +85,60 @@ cost time to compression is 2472.8123886585236
 Baseline model accuracy: 87.072054, Compressed model accuracy: 73.278264
 Compression ratio for memory=0.747886, mac=0.668017
 
-spatial_svd resnet18  
+******************************************* spatial_svd resnet18*******************************************  
 [(4.410438537597656, 2081.75), (4.446521759033203, 2081.75), (4.429775238037109, 2081.75), (4.4181671142578125, 2081.75), (4.425960540771484, 2081.75), (4.388862609863281, 2081.75), (4.4202728271484375, 2081.75), (4.461154937744141, 2081.75)]
-2022-04-18 20:49:36,692 : myFinetune - INFO - spatial_svd_resnet18_metricMac_False_0.2_2022-04-18-16-29-09_compressed_model_not_finetuned.pth__87.42
-2022-04-18 21:27:59,050 : myFinetune - INFO - spatial_svd_resnet18_metricMac_False_0.4_2022-04-18-16-31-51_compressed_model_not_finetuned.pth__87.28
-2022-04-18 22:06:40,964 : myFinetune - INFO - spatial_svd_resnet18_metricMac_False_0.6_2022-04-18-16-34-33_compressed_model_not_finetuned.pth__87.24
-2022-04-18 22:45:16,587 : myFinetune - INFO - spatial_svd_resnet18_metricMac_False_0.8_2022-04-18-16-37-14_compressed_model_not_finetuned.pth__87.42
-2022-04-18 23:23:58,616 : myFinetune - INFO - spatial_svd_resnet18_metricMac_True_0.2_2022-04-18-16-18-23_compressed_model_not_finetuned.pth__86.27
-2022-04-19 00:02:48,961 : myFinetune - INFO - spatial_svd_resnet18_metricMac_True_0.4_2022-04-18-16-21-06_compressed_model_not_finetuned.pth__86.4
-2022-04-19 00:41:39,908 : myFinetune - INFO - spatial_svd_resnet18_metricMac_True_0.6_2022-04-18-16-23-49_compressed_model_not_finetuned.pth__86.85
-2022-04-19 01:23:13,216 : myFinetune - INFO - spatial_svd_resnet18_metricMac_True_0.8_2022-04-18-16-26-26_compressed_model_not_finetuned.pth__87.34
+spatial_svd_resnet18_metricMac_False_0.4__87.28
+cost time to compression is 144.54809880256653
+Baseline model accuracy: 86.017118, Compressed model accuracy: 60.658838
+Compression ratio for memory=0.178526, mac=0.411991
 
+spatial_svd_resnet18_metricMac_True_0.2__86.27
+cost time to compression is 146.5457935333252
+Baseline model accuracy: 86.017118, Compressed model accuracy: 31.329618
+Compression ratio for memory=0.137202, mac=0.197031
+
+spatial_svd_resnet18_metricMac_True_0.4__86.4
+cost time to compression is 146.41310358047485
+Baseline model accuracy: 86.017118, Compressed model accuracy: 40.615048
+Compression ratio for memory=0.151192, mac=0.338500
+
+spatial_svd_resnet18_metricMac_True_0.6__86.85
+cost time to compression is 146.2432084083557
+Baseline model accuracy: 86.017118, Compressed model accuracy: 43.033439
+Compression ratio for memory=0.164245, mac=0.401594
+
+spatial_svd_resnet18_metricMac_True_0.8__87.34
+cost time to compression is 140.43542170524597
+Baseline model accuracy: 86.017118, Compressed model accuracy: 50.587182
+Compression ratio for memory=0.955607, mac=0.790962
 
 *******************************************spatial_svd resnet50*******************************************  
 [(4.453243255615234, 2021.75), (4.461597442626953, 2021.75), (4.466957092285156, 2021.75), (4.4745941162109375, 2021.75), (4.477317810058594, 2021.75), (4.479930877685547, 2021.75), (4.4957427978515625, 2021.75), (4.508365631103516, 2021.75)]
-2022-04-18 21:34:11,944 : myFinetune - INFO - spatial_svd_resnet50_metricMac_False_0.2_2022-04-18-17-08-08_compressed_model_not_finetuned.pth__87.59
-2022-04-18 22:51:17,751 : myFinetune - INFO - spatial_svd_resnet50_metricMac_False_0.4_2022-04-18-17-14-16_compressed_model_not_finetuned.pth__87.79
-2022-04-19 00:08:49,925 : myFinetune - INFO - spatial_svd_resnet50_metricMac_False_0.6_2022-04-18-17-20-27_compressed_model_not_finetuned.pth__87.96
-2022-04-19 01:26:27,717 : myFinetune - INFO - spatial_svd_resnet50_metricMac_False_0.8_2022-04-18-17-26-39_compressed_model_not_finetuned.pth__88.07
-2022-04-19 02:33:03,226 : myFinetune - INFO - spatial_svd_resnet50_metricMac_True_0.2_2022-04-18-16-43-27_compressed_model_not_finetuned.pth__87.1
-2022-04-19 03:39:54,708 : myFinetune - INFO - spatial_svd_resnet50_metricMac_True_0.4_2022-04-18-16-49-37_compressed_model_not_finetuned.pth__87.43
-2022-04-19 04:45:10,463 : myFinetune - INFO - spatial_svd_resnet50_metricMac_True_0.6_2022-04-18-16-55-46_compressed_model_not_finetuned.pth__88.0
-2022-04-19 05:50:25,675 : myFinetune - INFO - spatial_svd_resnet50_metricMac_True_0.8_2022-04-18-17-01-58_compressed_model_not_finetuned.pth__87.97
+spatial_svd_resnet50_metricMac_False_0.2__87.59
+cost time to compression is 349.6890015602112
+Baseline model accuracy: 87.072054, Compressed model accuracy: 54.956210
+Compression ratio for memory=0.196179, mac=0.321798
+
+spatial_svd_resnet50_metricMac_False_0.4__87.79
+cost time to compression is 348.99980902671814
+Baseline model accuracy: 87.072054, Compressed model accuracy: 69.038615
+Compression ratio for memory=0.213771, mac=0.435391
+
+spatial_svd_resnet50_metricMac_True_0.2__87.1
+cost time to compression is 353.0309920310974
+Baseline model accuracy: 87.072054, Compressed model accuracy: 42.665207
+Compression ratio for memory=0.169287, mac=0.191963
+
+spatial_svd_resnet50_metricMac_True_0.4__87.43
+cost time to compression is 351.15222096443176
+Baseline model accuracy: 87.072054, Compressed model accuracy: 53.125000
+Compression ratio for memory=0.194462, mac=0.325387
+
+spatial_svd_resnet50_metricMac_True_0.6__88.0
+cost time to compression is 349.423885345459
+Baseline model accuracy: 87.072054, Compressed model accuracy: 61.365446
+Compression ratio for memory=0.216702, mac=0.434307
+
 
 *******************************************weight_svd resnet18*******************************************
 [(4.9183502197265625, 2660.75), (4.33245849609375, 2660.75), (4.370265960693359, 2660.75), (4.3753204345703125, 2660.75), (4.344554901123047, 2306.75), (4.312370300292969, 2306.75), (4.3216552734375, 2306.75), (4.323333740234375, 2306.75)]
@@ -131,15 +163,22 @@ Baseline model accuracy: 86.017118, Compressed model accuracy: 73.377787
 Compression ratio for memory=0.165290, mac=0.461664
 
 
-weight_svd resnet50
+*******************************************weight_svd resnet50*******************************************
 [(4.336017608642578, 2042.75), (4.314155578613281, 2042.75), (4.3668212890625, 2042.75), (4.343132019042969, 2042.75), (4.339973449707031, 2400.75), (4.356632232666016, 2400.75), (4.388874053955078, 2400.75), (4.241703033447266, 2400.75)]
-2022-04-19 21:54:07,633 : myFinetune - INFO - resnet50_metricMac_False_0.2.pth__88.15
-2022-04-19 23:11:50,859 : myFinetune - INFO - resnet50_metricMac_False_0.6.pth__88.48
-2022-04-20 00:29:55,909 : myFinetune - INFO - resnet50_metricMac_False_0.8.pth__88.62
-2022-04-20 01:46:47,695 : myFinetune - INFO - resnet50_metricMac_True_0.2.pth__86.81
-2022-04-20 02:52:04,837 : myFinetune - INFO - resnet50_metricMac_True_0.4.pth__88.82
-2022-04-20 04:01:25,121 : myFinetune - INFO - resnet50_metricMac_True_0.6.pth__87.58
-2022-04-20 05:08:45,541 : myFinetune - INFO - resnet50_metricMac_True_0.8.pth__88.1
+resnet50_metricMac_False_0.2.pth__88.15
+compression cost time 754.1109130382538
+Baseline model accuracy: 87.072054, Compressed model accuracy: 69.804936
+Compression ratio for memory=0.142889, mac=0.396226
+
+resnet50_metricMac_True_0.2.pth__86.81
+compression cost time 747.9583733081818
+Baseline model accuracy: 87.072054, Compressed model accuracy: 53.642516
+Compression ratio for memory=0.096962, mac=0.175211
+
+resnet50_metricMac_True_0.4.pth__88.82
+compression cost time 744.1413459777832
+Baseline model accuracy: 87.072054, Compressed model accuracy: 70.232882
+Compression ratio for memory=0.130151, mac=0.365779
 
 
 adaround resnet18
