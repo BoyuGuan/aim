@@ -125,7 +125,7 @@ class ImageNetDataPipeline:
 
 def apply_adaround_and_find_quantized_accuracy(model: torch.nn.Module, evaluator: aimet_common.defs.EvalFunction,
                                                data_loader: torch_data.DataLoader, use_cuda: bool = False,
-                                               logdir: str = '') -> Tuple[torch.nn.Module, float]:
+                                               logdir: str = '', bit_width:int = 8) -> Tuple[torch.nn.Module, float]:
     """
     Quantizes the model using AIMET's adaround feature, and saves the model.
 
@@ -137,6 +137,7 @@ def apply_adaround_and_find_quantized_accuracy(model: torch.nn.Module, evaluator
                                       dataset
     :param use_cuda: The cuda device.
     :param logdir: Path to a directory for logging.
+    :param bit_width: bit width after quantize
     :return: A tuple of quantized model and accuracy of model on this quantsim
     """
 
@@ -156,16 +157,20 @@ def apply_adaround_and_find_quantized_accuracy(model: torch.nn.Module, evaluator
     # Only 20 batches are used here to speed up the process, also the
     # number of images in these 20 batches should be sufficient for
     # compute encodings
-    iterations = 20
+    iterations = 10000
 
-    params = AdaroundParameters(data_loader=data_loader, num_batches=20)
+    params = AdaroundParameters(data_loader=data_loader, num_batches=16)
+
+    timeBeforeAdaRound = time.time()
     ada_model = Adaround.apply_adaround(bn_folded_model, dummy_input, params,
-                                        path=logdir, filename_prefix='adaround', default_param_bw=8,
+                                        path=logdir, filename_prefix='adaround', default_param_bw= bit_width,
                                         default_quant_scheme=QuantScheme.post_training_tf_enhanced)
+    timeAfterAdaRound = time.time()
+    logger.info('Time of adaround is ' + str(timeAfterAdaRound - timeBeforeAdaRound))
 
     quantsim = QuantizationSimModel(model=ada_model, dummy_input=dummy_input,
                                     quant_scheme=QuantScheme.post_training_tf_enhanced,
-                                    rounding_mode='nearest', default_output_bw=8, default_param_bw=8,
+                                    rounding_mode='nearest', default_output_bw=bit_width, default_param_bw=bit_width,
                                     in_place=False)
 
     # Set and freeze parameter encodings. These encodings are associated with the Adarounded parameters.
@@ -174,7 +179,12 @@ def apply_adaround_and_find_quantized_accuracy(model: torch.nn.Module, evaluator
     quantsim.compute_encodings(forward_pass_callback=partial(evaluator, use_cuda=use_cuda),
                                forward_pass_callback_args=iterations)
     quantsim.export(path=logdir, filename_prefix='adaround_resnet', dummy_input=dummy_input.cpu())
+    torch.save(quantsim.model, os.path.join(logdir, 'test.pth'))
+
+    beginEvalTimeAfterQuantization = time.time()
     accuracy = evaluator(quantsim.model, use_cuda=use_cuda)
+    endEvalTimeAfterQuantization = time.time()
+    logger.info('After Quantization the eval time is ' + str(endEvalTimeAfterQuantization - beginEvalTimeAfterQuantization))
 
     return accuracy
 
@@ -198,7 +208,7 @@ def adaround_example(config: argparse.Namespace):
                    logdir: Path to a directory for logging.
     """
 
-    # Instantiate Data Pipeline for evaluation and training
+    # Instantiate Data Pipeline for evaluation
     data_pipeline = ImageNetDataPipeline(config)
 
     # Load the config model
@@ -210,7 +220,12 @@ def adaround_example(config: argparse.Namespace):
     model = model.eval()
 
     # Calculate FP32 accuracy
+    beginEvalTimeBeforeQuantization = time.time()
     accuracy = data_pipeline.evaluate(model, use_cuda=config.use_cuda)
+    endEvalTimeBeforeQuantization = time.time()
+    logger.info('Before Quantization the eval time is ' + str(endEvalTimeBeforeQuantization - beginEvalTimeBeforeQuantization))
+
+
     logger.info("Original Model top-1 accuracy = %.2f", accuracy)
     logger.info("Applying Adaround")
 
@@ -220,7 +235,7 @@ def adaround_example(config: argparse.Namespace):
                                      image_size=image_net_config.dataset['image_size']).data_loader
     accuracy = apply_adaround_and_find_quantized_accuracy(model=model, evaluator=data_pipeline.evaluate,
                                                           data_loader=data_loader, use_cuda=config.use_cuda,
-                                                          logdir=config.logdir)
+                                                          logdir=config.logdir, bit_width = config.bit_width)
 
     logger.info("After applying Adaround, top-1 accuracy = %.2f", accuracy)
     logger.info("Adaround Complete")
@@ -245,10 +260,13 @@ if __name__ == '__main__':
                         you don't need to give it a value, whatever you input, it will be 'benchmark_output/model_name_adaround_<Y-m-d-H-M-S>'")
     
     parser.add_argument('--model', type=int, required=True,
-                help="The model you want to compress, \n\
+                help="The model you want to quantize, \n\
                     0 means resnet18, \n\
                     1 means resnet50, \n\
                     2 means mobilenet_v2")
+
+    parser.add_argument('--bit_width', type=int, required=False, default = 8,
+            help="The bit width you want to quantize,  4, 8(default), 16")
 
     _config = parser.parse_args()
 
