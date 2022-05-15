@@ -165,6 +165,8 @@ def apply_adaround_and_find_quantized_accuracy(model: torch.nn.Module, evaluator
     ada_model = Adaround.apply_adaround(bn_folded_model, dummy_input, params,
                                         path=logdir, filename_prefix='adaround', default_param_bw= bit_width,
                                         default_quant_scheme=QuantScheme.post_training_tf_enhanced)
+    torch.save(ada_model, os.path.join(logdir, 'adamodel.pth'))
+
     timeAfterAdaRound = time.time()
     logger.info('Time of adaround is ' + str(timeAfterAdaRound - timeBeforeAdaRound))
 
