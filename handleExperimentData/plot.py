@@ -194,7 +194,7 @@ def spatialSVD_resnet50():
     plt.savefig(PLOTDIR + '/spatialSVD_resnet50.png')
 
 def adaround():
-    accResNet18 = [10.25, 72.52, 67.58]
+    accResNet18 = [10.25, 72.52, 76.58]
     accResNet50 = [77.09, 84.98, 85.33]
     # x = [ 1, 2, 3 ]
     x = [ '4bit', '8bit', '16bit', ]
@@ -207,8 +207,6 @@ def adaround():
     axs[0].set_ylabel('accuracy on validation dataset(%)')
     axs[0].legend()
 
-    # plt.xticks([], my_xticks)
-
     axs[1].plot( x , accResNet50, '*m' )
     axs[1].plot( x , [86.5]*3, ',-r', label = 'baseline accuracy')
     axs[1].set_title('ResNet50 accuracy after quantization')
@@ -218,13 +216,27 @@ def adaround():
 
     plt.savefig(PLOTDIR + '/adaround.png')
 
+def barPic()
+    n = 6
+    X = np.arange(n)
+    Y1 = (1 - X / float(n)) * np.random.uniform(0.5, 1.0, n)
+    Y2 = (1 - X / float(n)) * np.random.uniform(0.5, 1.0, n)
 
+    plt.bar(X, +Y1)
+    plt.bar(X, -Y2)
+
+    plt.xlim(-.5, n)
+    plt.xticks(())
+    plt.ylim(-1.25, 1.25)
+    plt.yticks(())
+
+    plt.show()
 
 if __name__ == '__main__':
-    channel_resnet18()
-    channel_resnet50()
-    weightSVD_resnet18()
-    weightSVD_resnet50()
-    spatialSVD_resnet18()
-    spatialSVD_resnet50()
+    # channel_resnet18()
+    # channel_resnet50()
+    # weightSVD_resnet18()
+    # weightSVD_resnet50()
+    # spatialSVD_resnet18()
+    # spatialSVD_resnet50()
     adaround()

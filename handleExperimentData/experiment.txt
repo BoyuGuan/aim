@@ -181,23 +181,57 @@ Baseline model accuracy: 87.072054, Compressed model accuracy: 70.232882
 Compression ratio for memory=0.130151, mac=0.365779
 
 
-adaround resnet18
+*********************adaround resnet18*********************
 4
-10.25
+Before Quantization the eval time is 4.734954833984375
+Original Model top-1 accuracy = 86.02
+Time of adaround is 423.7237045764923
+After Quantization the eval time is 5.744723796844482
+After applying Adaround, top-1 accuracy = 10.25
 
 8
-72.52
+Before Quantization the eval time is 4.685699224472046
+Original Model top-1 accuracy = 86.02
+Time of adaround is 422.8521420955658
+After Quantization the eval time is 5.6976776123046875
+After applying Adaround, top-1 accuracy = 72.52
 
 16
-67.58
+Before Quantization the eval time is 4.684971809387207
+Original Model top-1 accuracy = 86.02
+Time of adaround is 416.42588472366333
+After Quantization the eval time is 5.690268516540527
+After applying Adaround, top-1 accuracy = 76.58
 
-adaround resnet50
+
+*********************adaround resnet50*********************
 4
-77.09
+Before Quantization the eval time is 5.908230543136597
+Original Model top-1 accuracy = 87.07
+Time of adaround is 1121.2120304107666
+After Quantization the eval time is 8.756324768066406
+After applying Adaround, top-1 accuracy = 77.09
 
 8
-84.98
-
+Before Quantization the eval time is 5.884706735610962
+Original Model top-1 accuracy = 87.07
+Time of adaround is 1125.6612474918365
+After Quantization the eval time is 8.740274906158447
+After applying Adaround, top-1 accuracy = 84.98
 
 16
-85.33
+Before Quantization the eval time is 5.968969345092773
+Original Model top-1 accuracy = 87.07
+Applying Adaround
+Time of adaround is 1145.0674715042114
+After Quantization the eval time is 9.188127517700195
+After applying Adaround, top-1 accuracy = 85.33
+
+******************************************android******************************************
+original model 
+164.02 137 186 185 198 178 184 153 168 150 166 175 137 172 160 167 142 175 134 185 159 163 158 144 187 141 188 137 173 167 132 154 166 153 194 165 139 174 140 136 176 192 172 191 164 179 164 137 152 181 171
+167.96 173 143 172 153 200 182 194 173 176 191 158 174 200 176 200 135 155 169 174 196 179 151 134 148 137 137 198 197 195 198 173 138 133 173 187 151 153 147 153 199 174 147 141 197 184 137 160 140 197 146
+
+compressed model
+90.26 105 77 66 114 86 77 81 88 85 116 115 77 71 108 104 82 77 98 110 82 114 93 109 102 80 73 93 72 68 89 76 74 100 102 90 87 66 107 84 86 101 114 80 92 87 77 102 100 89 87
+94.1 104 105 94 114 79 76 73 79 89 79 89 111 106 85 94 75 84 112 115 87 100 117 91 82 89 80 100 113 105 75 87 116 74 115 77 113 73 82 71 89 117 110 100 81 108 89 87 82 118 114

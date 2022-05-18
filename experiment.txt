@@ -69,8 +69,12 @@ weight_svd resnet50
 2022-04-20 05:08:45,541 : myFinetune - INFO - resnet50_metricMac_True_0.8.pth__88.1
 
 
+4 8 16 bit
 adaround resnet18
 [(4.262481689453125, 1965.75)] 
+423.7237045764923
+
+
 
 adaround resnet50
 [(4.491687774658203, 2403.75)]  
