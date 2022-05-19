@@ -227,6 +227,62 @@ Time of adaround is 1145.0674715042114
 After Quantization the eval time is 9.188127517700195
 After applying Adaround, top-1 accuracy = 85.33
 
+*********************cle_bc resnet18*********************
+4
+Original Model Top-1 accuracy = 86.02
+Quantized Model Top-1 Accuracy Before CLE = 32.25
+CLE time is 10.248579025268555
+Quantized Model Top-1 Accuracy After CLE = 71.97
+BC time is 19.02452802658081
+CLE-BC time is 29.273107051849365
+Quantized Model Top-1 Accuracy After Bias Correction = 61.14
+
+8
+Original Model Top-1 accuracy = 86.02
+Quantized Model Top-1 Accuracy Before CLE = 68.72
+CLE time is 10.252164602279663
+Quantized Model Top-1 Accuracy After CLE = 85.83
+BC time is 18.922424793243408
+CLE-BC time is 29.17458939552307
+Quantized Model Top-1 Accuracy After Bias Correction = 85.83
+
+16
+Original Model Top-1 accuracy = 86.02
+Quantized Model Top-1 Accuracy Before CLE = 67.39
+CLE time is 10.2510085105896
+Quantized Model Top-1 Accuracy After CLE = 85.90
+BC time is 19.28948473930359
+CLE-BC time is 29.54049324989319
+Quantized Model Top-1 Accuracy After Bias Correction = 85.90
+
+*********************cle_bc resnet50*********************
+4
+Original Model Top-1 accuracy = 87.07
+Quantized Model Top-1 Accuracy Before CLE = 9.95
+CLE time is 26.33985161781311
+Quantized Model Top-1 Accuracy After CLE = 66.10
+BC time is 53.94244384765625
+CLE-BC time is 80.28229546546936
+Quantized Model Top-1 Accuracy After Bias Correction = 57.29
+
+8
+Original Model Top-1 accuracy = 87.07
+Quantized Model Top-1 Accuracy Before CLE = 84.68
+CLE time is 26.253061294555664
+Quantized Model Top-1 Accuracy After CLE = 86.99
+BC time is 53.70259475708008
+CLE-BC time is 79.95565605163574
+Quantized Model Top-1 Accuracy After Bias Correction = 87.13
+
+16
+Original Model Top-1 accuracy = 87.07
+Quantized Model Top-1 Accuracy Before CLE = 85.28
+CLE time is 26.34660506248474
+Quantized Model Top-1 Accuracy After CLE = 87.13
+BC time is 53.734591245651245
+CLE-BC time is 80.08119630813599
+Quantized Model Top-1 Accuracy After Bias Correction = 87.13
+
 ******************************************android******************************************
 original model 
 164.02 137 186 185 198 178 184 153 168 150 166 175 137 172 160 167 142 175 134 185 159 163 158 144 187 141 188 137 173 167 132 154 166 153 194 165 139 174 140 136 176 192 172 191 164 179 164 137 152 181 171

@@ -197,7 +197,7 @@ def adaround():
     accResNet18 = [10.25, 72.52, 76.58]
     accResNet50 = [77.09, 84.98, 85.33]
     # x = [ 1, 2, 3 ]
-    x = [ '4bit', '8bit', '16bit', ]
+    x = [ '4bit', '8bit', '16bit' ]
 
     fig, axs = plt.subplots(nrows=2, ncols=1, figsize=(5, 10))
     axs[0].plot( x , accResNet18, '*m' , label = 'accuracy after quantization')
@@ -216,21 +216,95 @@ def adaround():
 
     plt.savefig(PLOTDIR + '/adaround.png')
 
-def barPic()
-    n = 6
-    X = np.arange(n)
-    Y1 = (1 - X / float(n)) * np.random.uniform(0.5, 1.0, n)
-    Y2 = (1 - X / float(n)) * np.random.uniform(0.5, 1.0, n)
+def cle_bc_resnet18():
+    accResNet18BeforeCLE = np.array([32.25, 68.72, 67.39])
+    accResNet18AfterCLE = np.array([71.97, 85.83, 85.90])
+    accResNet18AfterBC = np.array([61.14, 85.83, 85.90])
+    br0 = np.arange(len(accResNet18BeforeCLE))
+    barWidth = 0.15
+    br1 = [x + barWidth for x in br0]
+    br2 = [x + barWidth for x in br1]
+    br3 = [x + barWidth for x in br2]
 
-    plt.bar(X, +Y1)
-    plt.bar(X, -Y2)
+    plt.figure(figsize=(10, 6), dpi=180)
 
-    plt.xlim(-.5, n)
-    plt.xticks(())
-    plt.ylim(-1.25, 1.25)
-    plt.yticks(())
+    plt.bar(br0, [86.02]*len(accResNet18AfterBC), color ='#9b95c9', width = barWidth, edgecolor ='grey', label ='baseline accuracy')
+    plt.bar(br1, accResNet18BeforeCLE, color ='#faa755', width = barWidth, edgecolor ='grey', label ='accuracy after quantization before CLE')
+    plt.bar(br2, accResNet18AfterCLE, color ='#444693', width = barWidth, edgecolor ='grey', label ='accuracy after CLE before BC')
+    plt.bar(br3, accResNet18AfterBC, color ='#f2eada', width = barWidth, edgecolor ='grey', label ='accuracy after BC')
 
-    plt.show()
+    plt.xticks([r + barWidth for r in range(3)], [ '4bit', '8bit', '16bit'])
+    plt.xlabel('bit number after quantization')
+    plt.ylabel('accuracy on validation dataset(%)')
+    plt.title('The influence of Cross-Layer Equalization(CLE) and Bias Correction(BC) on ResNet18')
+    plt.legend(loc='lower right', shadow=True )
+    plt.savefig(PLOTDIR + '/cle_bc_resnet18.png')
+
+def cle_bc_resnet50():
+    accResNet50BeforeCLE = np.array([9.95, 84.68, 85.28])
+    accResNet50AfterCLE = np.array([66.10, 86.99, 87.13])
+    accResNet50AfterBC = np.array([57.29, 87.13, 87.13])
+    br0 = np.arange(len(accResNet50BeforeCLE))
+    barWidth = 0.15
+    br1 = [x + barWidth for x in br0]
+    br2 = [x + barWidth for x in br1]
+    br3 = [x + barWidth for x in br2]
+
+    plt.figure(figsize=(10, 6), dpi=180)
+
+    plt.bar(br0, [86.02]*len(accResNet50AfterBC), color ='#9b95c9', width = barWidth, edgecolor ='grey', label ='baseline accuracy')
+    plt.bar(br1, accResNet50BeforeCLE, color ='#faa755', width = barWidth, edgecolor ='grey', label ='accuracy after quantization before CLE')
+    plt.bar(br2, accResNet50AfterCLE, color ='#444693', width = barWidth, edgecolor ='grey', label ='accuracy after CLE before BC')
+    plt.bar(br3, accResNet50AfterBC, color ='#f2eada', width = barWidth, edgecolor ='grey', label ='accuracy after BC')
+
+    plt.xticks([r + barWidth for r in range(3)], [ '4bit', '8bit', '16bit'])
+    plt.xlabel('bit number after quantization')
+    plt.ylabel('accuracy on validation dataset(%)')
+    plt.title('The influence of Cross-Layer Equalization(CLE) and Bias Correction(BC) on ResNet50')
+    plt.legend(loc='lower right', shadow=True )
+    plt.savefig(PLOTDIR + '/cle_bc_resnet50.png')
+
+def compare_time_resnet18():
+    # plt.figure(figsize=(20, 6), dpi=180)
+    channel_time_resnet18 = np.array([863.70, 817.59, 839.01, 823.88, 769.81, 862.32, 808.28]).mean()
+    weight_svd_resnet18 = np.array([246.6894, 248.419, 245.428, 245.516]).mean()
+    spatial_svd_resnet18 = np.array([144.548, 146.545, 146.413, 146.24, 140.435]).mean()
+    adaround_resnet18 = np.array([423.72, 422.85, 416.426]).mean()
+    CLE_time_ResNet18 = np.array([10.25, 10.25, 10.25]).mean()
+    bc_time_ResNet18 = np.array([19.02, 18.92, 19.29]).mean()
+
+    channel_time_resnet50 = np.array([3309.16, 3944.23, 3270.385, 3158.2, 4006.255, 3466.395, 3259.653, 2472.81]).mean()
+    weight_svd_resnet50 = np.array([754.11, 747.958, 744.14]).mean()
+    spatial_svd_resnet50 = np.array([144.548, 146.545, 146.413, 146.24, 140.435]).mean()
+    adaround_resnet50 = np.array([1121.21, 1125.66, 1145.067]).mean()
+    CLE_time_ResNet50 = np.array([26.34, 26.253, 26.35]).mean()
+    bc_time_ResNet50 = np.array([53.9424, 53.7026, 53.73]).mean()
+
+    colName = ['C P', 'W SVD', 'S SVD', 'AdaRound', 'CLE', 'BC','CLE + BC' ]
+    barPositions = (np.arange(7) + 0.75) * (-1)
+    tickPositions = barPositions
+    fig, axs = plt.subplots(nrows=2, ncols=1, figsize=(10, 12))
+
+    axs[0].barh(barPositions, [ channel_time_resnet18, weight_svd_resnet18, spatial_svd_resnet18, adaround_resnet18,\
+         CLE_time_ResNet18, bc_time_ResNet18, CLE_time_ResNet18 + bc_time_ResNet18], 0.5, color = '#905a3d')
+    axs[0].set_yticks(tickPositions)
+    axs[0].set_yticklabels(colName)
+    axs[0].set_title('Time Cost on ResNet18')
+    axs[0].set_xlabel('Time (s)')
+    axs[0].set_ylabel('Algorithm Name')
+
+    axs[1].barh(barPositions, [ channel_time_resnet50, weight_svd_resnet50, spatial_svd_resnet50, adaround_resnet50,\
+         CLE_time_ResNet50, bc_time_ResNet50, CLE_time_ResNet50 + bc_time_ResNet50], 0.5, color = '#905a3d')
+    axs[1].set_yticks(tickPositions)
+    axs[1].set_yticklabels(colName)
+    axs[1].set_title('Time Cost on ResNet50')
+    axs[1].set_xlabel('Time (s)')
+    axs[1].set_ylabel('Algorithm Name')
+    # plt.tight_layout()
+    plt.savefig(PLOTDIR + '/compare_time.png')
+
+
+
 
 if __name__ == '__main__':
     # channel_resnet18()
@@ -239,4 +313,7 @@ if __name__ == '__main__':
     # weightSVD_resnet50()
     # spatialSVD_resnet18()
     # spatialSVD_resnet50()
-    adaround()
+    # adaround()
+    # cle_bc_resnet18()
+    # cle_bc_resnet50()
+    compare_time_resnet18()
