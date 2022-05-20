@@ -44,7 +44,8 @@ Baseline model accuracy: 86.017118, Compressed model accuracy: 82.931927
 Compression ratio for memory=0.262622, mac=0.621336
 
 *************channel_prunning_resnet50***********
-channel pruning resnet50 [(14.816150665283203, 2941.75), (12.694087982177734, 2941.75), (12.42123794555664, 2941.75), (8.4573974609375, 2941.75), (13.638538360595703, 2941.75), (11.165534973144531, 2941.75), (11.165771484375, 2941.75), (11.442974090576172, 2941.75)]
+channel pruning resnet50 
+[(14.816150665283203, 2941.75), (12.694087982177734, 2941.75), (12.42123794555664, 2941.75), (8.4573974609375, 2941.75), (13.638538360595703, 2941.75), (11.165534973144531, 2941.75), (11.165771484375, 2941.75), (11.442974090576172, 2941.75)]
 channel_prunning_resnet50_metricMac_False_0.8  89.37
 cost time to compression is 3309.1602478027344
 Baseline model accuracy: 87.072054, Compressed model accuracy: 49.512341
@@ -182,6 +183,7 @@ Compression ratio for memory=0.130151, mac=0.365779
 
 
 *********************adaround resnet18*********************
+[(4.282390594482422, 2017.75), (4.346527099609375, 2009.75), (4.343418121337891, 2007.75)]
 4
 Before Quantization the eval time is 4.734954833984375
 Original Model top-1 accuracy = 86.02
@@ -205,6 +207,7 @@ After applying Adaround, top-1 accuracy = 76.58
 
 
 *********************adaround resnet50*********************
+[(4.403831481933594, 2317.75), (3.7180709838867188, 2321.75), (4.195941925048828, 2321.75)]
 4
 Before Quantization the eval time is 5.908230543136597
 Original Model top-1 accuracy = 87.07
@@ -228,6 +231,7 @@ After Quantization the eval time is 9.188127517700195
 After applying Adaround, top-1 accuracy = 85.33
 
 *********************cle_bc resnet18*********************
+[(3.9810256958007812, 2038.75), (3.9981689453125, 2038.75), (4.0495758056640625, 2038.75)]
 4
 Original Model Top-1 accuracy = 86.02
 Quantized Model Top-1 Accuracy Before CLE = 32.25
@@ -256,6 +260,7 @@ CLE-BC time is 29.54049324989319
 Quantized Model Top-1 Accuracy After Bias Correction = 85.90
 
 *********************cle_bc resnet50*********************
+[(4.180061340332031, 2292.75), (4.1720733642578125, 2292.75), (4.167217254638672, 2222.75)]
 4
 Original Model Top-1 accuracy = 87.07
 Quantized Model Top-1 Accuracy Before CLE = 9.95
