@@ -200,20 +200,24 @@ def adaround():
     x = [ '4bit', '8bit', '16bit' ]
 
     fig, axs = plt.subplots(nrows=2, ncols=1, figsize=(5, 10))
-    axs[0].plot( x , accResNet18, '*m' , label = 'accuracy after quantization')
-    axs[0].plot( x , [86.5]*3, ',-r', label = 'baseline accuracy')
+    axs[0].plot( x , [86]*3, ',-r', label = 'baseline model accuracy')
+    axs[0].plot( x , accResNet18, '*m' , label = 'AdaRound quantization model accuracy')
+    axs[0].plot( x , [32.25, 68.72, 67.39], '^k', label = 'normal quantized model accuracy')
     axs[0].set_title('ResNet18 accuracy after quantization')
     axs[0].set_xlabel('bit number after quantization')
     axs[0].set_ylabel('accuracy on validation dataset(%)')
     axs[0].legend()
 
-    axs[1].plot( x , accResNet50, '*m' )
-    axs[1].plot( x , [86.5]*3, ',-r', label = 'baseline accuracy')
+    axs[1].plot( x , [87]*3, ',-r', label = 'baseline model accuracy')
+    axs[1].plot( x , accResNet50, '*m', label = 'AdaRound quantization model accuracy')
+    axs[1].plot( x , [9.95, 84.68, 85.28], '^k', label = 'normal quantized model accuracy')
+
     axs[1].set_title('ResNet50 accuracy after quantization')
     axs[1].set_xlabel('bit number after quantization')
     axs[1].set_ylabel('accuracy on validation dataset(%)')
     axs[1].legend()
 
+    plt.tight_layout()
     plt.savefig(PLOTDIR + '/adaround.png')
 
 def cle_bc_resnet18():
@@ -381,8 +385,9 @@ if __name__ == '__main__':
     # weightSVD_resnet50()
     # spatialSVD_resnet18()
     # spatialSVD_resnet50()
-    # adaround()
+    adaround()
     # cle_bc_resnet18()
     # cle_bc_resnet50()
     # compare_time()
-    compare_memory()
+    # compare_memory()
+
