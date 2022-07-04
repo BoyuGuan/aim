@@ -279,7 +279,7 @@ def compare_time():
 
     channel_time_resnet50 = np.array([3309.16, 3944.23, 3270.385, 3158.2, 4006.255, 3466.395, 3259.653, 2472.81])
     weight_svd_resnet50 = np.array([754.11, 747.958, 744.14])
-    spatial_svd_resnet50 = np.array([144.548, 146.545, 146.413, 146.24, 140.435])
+    spatial_svd_resnet50 = np.array([353.03, 349.42, 351.15, 349])
     adaround_resnet50 = np.array([1139.88, 1114.346, 1122.76])
     CLE_time_ResNet50 = np.array([26.34, 26.253, 26.35])
     bc_time_ResNet50 = np.array([53.9424, 53.7026, 53.73])
@@ -385,9 +385,9 @@ if __name__ == '__main__':
     # weightSVD_resnet50()
     # spatialSVD_resnet18()
     # spatialSVD_resnet50()
-    adaround()
+    # adaround()
     # cle_bc_resnet18()
     # cle_bc_resnet50()
-    # compare_time()
+    compare_time()
     # compare_memory()
 
